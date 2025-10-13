@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Emydn EduGames</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #8B0000, #DC143C);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 100%;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo h1 {
+            color: #8B0000;
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        .logo p {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border 0.3s;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #8B0000;
+        }
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: #8B0000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #DC143C;
+        }
+        .error {
+            color: #DC143C;
+            font-size: 0.85em;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>🎮 EMYDN</h1>
+            <p>Portal Game Edukasi</p>
+        </div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="nama">Nama Lengkap</label>
+                <input type="text" id="nama" required>
+                <span class="error" id="namaError">Nama harus diisi</span>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required>
+                <span class="error" id="emailError">Email tidak valid</span>
+            </div>
+            <div class="form-group">
+                <label for="kota">Kota/Provinsi</label>
+                <select id="kota" required>
+                    <option value="">Pilih Kota/Provinsi</option>
+                    <option value="Jakarta Raya">Jakarta Raya</option>
+                    <option value="Jawa Barat">Jawa Barat</option>
+                    <option value="Jawa Tengah">Jawa Tengah</option>
+                    <option value="Jawa Timur">Jawa Timur</option>
+                    <option value="Banten">Banten</option>
+                    <option value="Yogyakarta">Yogyakarta</option>
+                    <option value="Bali">Bali</option>
+                    <option value="Sumatera Utara">Sumatera Utara</option>
+                    <option value="Sumatera Barat">Sumatera Barat</option>
+                    <option value="Sumatera Selatan">Sumatera Selatan</option>
+                    <option value="Kalimantan Timur">Kalimantan Timur</option>
+                    <option value="Sulawesi Selatan">Sulawesi Selatan</option>
+                </select>
+                <span class="error" id="kotaError">Kota harus dipilih</span>
+            </div>
+            <button type="submit" class="btn">Masuk & Main</button>
+        </form>
+    </div>
+
+    <script>
+        // Inisialisasi data soal jika belum ada
+        if (!localStorage.getItem('soalTebakKata')) {
+            const soalTebakKata = [
+                { clue: "Ibukota Indonesia", answer: "Jakarta", level: "mudah" },
+                { clue: "Lambang negara Indonesia", answer: "Garuda", level: "mudah" },
+                { clue: "Presiden pertama Indonesia", answer: "Soekarno", level: "mudah" },
+                { clue: "Bahasa pemrograman untuk web", answer: "JavaScript", level: "sedang" },
+                { clue: "Planet terdekat dengan matahari", answer: "Merkurius", level: "sedang" },
+                { clue: "Hewan tercepat di darat", answer: "Cheetah", level: "sedang" },
+                { clue: "Sungai terpanjang di dunia", answer: "Amazon", level: "sulit" },
+                { clue: "Penemu lampu pijar", answer: "Edison", level: "sulit" },
+                { clue: "Gunung tertinggi di Indonesia", answer: "Puncak Jaya", level: "sulit" },
+                { clue: "Ibu kota Jepang", answer: "Tokyo", level: "mudah" },
+                { clue: "Alat musik tradisional Jawa Barat", answer: "Angklung", level: "sedang" },
+                { clue: "Benua terbesar di dunia", answer: "Asia", level: "mudah" },
+                { clue: "Gas yang diperlukan tumbuhan untuk fotosintesis", answer: "Karbondioksida", level: "sulit" },
+                { clue: "Penulis novel Laskar Pelangi", answer: "Andrea Hirata", level: "sulit" },
+                { clue: "Satelit alami bumi", answer: "Bulan", level: "mudah" },
+                { clue: "Ibukota Perancis", answer: "Paris", level: "mudah" },
+                { clue: "Pahlawan yang dijuluki Bapak Proklamator", answer: "Soekarno", level: "sedang" },
+                { clue: "Organ tubuh yang memompa darah", answer: "Jantung", level: "mudah" },
+                { clue: "Mata uang negara Jepang", answer: "Yen", level: "sedang" },
+                { clue: "Nama lain untuk burung hantu", answer: "Kukuk", level: "sulit" }
+            ];
+            localStorage.setItem('soalTebakKata', JSON.stringify(soalTebakKata));
+        }
+
+        if (!localStorage.getItem('soalSusunHuruf')) {
+            const soalSusunHuruf = [
+                { answer: "Merah", level: "mudah" },
+                { answer: "Putih", level: "mudah" },
+                { answer: "Biru", level: "mudah" },
+                { answer: "Kuning", level: "mudah" },
+                { answer: "Hijau", level: "mudah" },
+                { answer: "Sekolah", level: "sedang" },
+                { answer: "Rumah", level: "mudah" },
+                { answer: "Komputer", level: "sedang" },
+                { answer: "Pendidikan", level: "sulit" },
+                { answer: "Keluarga", level: "sedang" },
+                { answer: "Pancasila", level: "sulit" },
+                { answer: "Merdeka", level: "sedang" },
+                { answer: "Prestasi", level: "sulit" },
+                { answer: "Teknologi", level: "sulit" },
+                { answer: "Budaya", level: "sedang" },
+                { answer: "Makanan", level: "sedang" },
+                { answer: "Kesehatan", level: "sulit" },
+                { answer: "Olahraga", level: "sedang" },
+                { answer: "Persahabatan", level: "sulit" },
+                { answer: "Kreativitas", level: "sulit" }
+            ];
+            localStorage.setItem('soalSusunHuruf', JSON.stringify(soalSusunHuruf));
+        }
+
+        if (!localStorage.getItem('soalTebakLokasi')) {
+            const soalTebakLokasi = [
+                { clue: "Ibukota Jawa Barat", options: ["Surabaya", "Bandung", "Medan"], answer: "Bandung", level: "sedang" },
+                { clue: "Ibukota Jawa Timur", options: ["Surabaya", "Semarang", "Jakarta"], answer: "Surabaya", level: "sedang" },
+                { clue: "Kota Gudeg", options: ["Yogyakarta", "Solo", "Bandung"], answer: "Yogyakarta", level: "mudah" },
+                { clue: "Ibukota Sumatera Utara", options: ["Medan", "Padang", "Palembang"], answer: "Medan", level: "mudah" },
+                { clue: "Pulau seribu candi", options: ["Jawa", "Bali", "Sumatera"], answer: "Jawa", level: "sedang" },
+                { clue: "Provinsi dengan Danau Toba", options: ["Sumatera Utara", "Sumatera Barat", "Riau"], answer: "Sumatera Utara", level: "sedang" },
+                { clue: "Kota Pahlawan", options: ["Surabaya", "Bandung", "Jakarta"], answer: "Surabaya", level: "mudah" },
+                { clue: "Ibukota Bali", options: ["Denpasar", "Singaraja", "Ubud"], answer: "Denpasar", level: "mudah" },
+                { clue: "Kota Paris Van Java", options: ["Bandung", "Jakarta", "Surabaya"], answer: "Bandung", level: "mudah" },
+                { clue: "Provinsi dengan Raja Ampat", options: ["Papua Barat", "Maluku", "Sulawesi"], answer: "Papua Barat", level: "sulit" },
+                { clue: "Ibukota Sulawesi Selatan", options: ["Makassar", "Manado", "Palu"], answer: "Makassar", level: "sedang" },
+                { clue: "Kota tempat Candi Borobudur", options: ["Magelang", "Yogyakarta", "Solo"], answer: "Magelang", level: "sulit" },
+                { clue: "Ibukota Kalimantan Timur", options: ["Samarinda", "Balikpapan", "Pontianak"], answer: "Samarinda", level: "sulit" },
+                { clue: "Provinsi dengan Danau Maninjau", options: ["Sumatera Barat", "Sumatera Utara", "Jambi"], answer: "Sumatera Barat", level: "sulit" },
+                { clue: "Kota Kembang", options: ["Bandung", "Malang", "Bogor"], answer: "Bandung", level: "mudah" },
+                { clue: "Ibukota Lampung", options: ["Bandar Lampung", "Metro", "Pringsewu"], answer: "Bandar Lampung", level: "sedang" },
+                { clue: "Pulau dengan Komodo", options: ["Nusa Tenggara Timur", "Bali", "Sulawesi"], answer: "Nusa Tenggara Timur", level: "sulit" },
+                { clue: "Ibukota Aceh", options: ["Banda Aceh", "Lhokseumawe", "Sabang"], answer: "Banda Aceh", level: "sedang" },
+                { clue: "Kota Apel", options: ["Malang", "Batu", "Kediri"], answer: "Malang", level: "sedang" },
+                { clue: "Provinsi paling timur Indonesia", options: ["Papua", "Maluku", "Sulawesi"], answer: "Papua", level: "sedang" }
+            ];
+            localStorage.setItem('soalTebakLokasi', JSON.stringify(soalTebakLokasi));
+        }
+
+        // Cek dan reset mingguan (setiap Sabtu)
+        const today = new Date();
+        const lastReset = localStorage.getItem('lastWeeklyReset');
+        if (!lastReset || isNewWeek(new Date(lastReset), today)) {
+            localStorage.setItem('lastWeeklyReset', today.toISOString());
+        }
+
+        // Cek dan reset bulanan leaderboard
+        const lastMonthlyReset = localStorage.getItem('lastMonthlyReset');
+        if (!lastMonthlyReset || isNewMonth(new Date(lastMonthlyReset), today)) {
+            localStorage.removeItem('leaderboard');
+            localStorage.setItem('lastMonthlyReset', today.toISOString());
+        }
+
+        function isNewWeek(lastDate, currentDate) {
+            const daysSince = Math.floor((currentDate - lastDate) / (1000 * 60 * 60 * 24));
+            return daysSince >= 7;
+        }
+
+        function isNewMonth(lastDate, currentDate) {
+            return lastDate.getMonth() !== currentDate.getMonth() || 
+                   lastDate.getFullYear() !== currentDate.getFullYear();
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nama = document.getElementById('nama').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const kota = document.getElementById('kota').value;
+
+            if (!nama || !email || !kota) {
+                alert('Semua field harus diisi!');
+                return;
+            }
+
+            const userData = { nama, email, kota };
+            localStorage.setItem('currentUser', JSON.stringify(userData));
+            
+            window.location.href = 'menu.html';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - Emydn EduGames</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #8B0000, #DC143C);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .user-info {
+            color: #8B0000;
+        }
+        .user-info h2 {
+            font-size: 1.5em;
+        }
+        .user-info p {
+            color: #666;
+            margin-top: 5px;
+        }
+        .logout-btn {
+            padding: 10px 20px;
+            background: #8B0000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+        .logout-btn:hover {
+            background: #DC143C;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        .game-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .game-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+        .game-card h3 {
+            color: #8B0000;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        .game-card p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .play-btn {
+            padding: 12px 30px;
+            background: #8B0000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+        }
+        .play-btn:hover {
+            background: #DC143C;
+        }
+        .leaderboard-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        .leaderboard-section h2 {
+            color: #8B0000;
+            margin-bottom: 15px;
+        }
+        .view-leaderboard-btn {
+            padding: 15px 40px;
+            background: #8B0000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .view-leaderboard-btn:hover {
+            background: #DC143C;
+        }
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="user-info">
+                <h2>🎮 Selamat Datang, <span id="userName"></span>!</h2>
+                <p>📍 <span id="userCity"></span></p>
+            </div>
+            <button class="logout-btn" onclick="logout()">Keluar</button>
+        </div>
+
+        <div class="games-grid">
+            <div class="game-card" onclick="playGame('tebak-kata.html')">
+                <div class="game-icon">🧠</div>
+                <h3>Tebak Kata</h3>
+                <p>Tebak kata dari petunjuk yang diberikan. Asah kemampuan berpikirmu!</p>
+                <button class="play-btn">Main Sekarang</button>
+            </div>
+
+            <div class="game-card" onclick="playGame('susun-huruf.html')">
+                <div class="game-icon">🧩</div>
+                <h3>Susun Huruf</h3>
+                <p>Susun huruf yang acak menjadi kata yang benar. Uji konsentrasimu!</p>
+                <button class="play-btn">Main Sekarang</button>
+            </div>
+
+            <div class="game-card" onclick="playGame('tebak-lokasi.html')">
+                <div class="game-icon">🌍</div>
+                <h3>Tebak Lokasi</h3>
+                <p>Tebak lokasi di Indonesia dari petunjuk. Kenali Nusantara!</p>
+                <button class="play-btn">Main Sekarang</button>
+            </div>
+        </div>
+
+        <div class="leaderboard-section">
+            <h2>🏆 Papan Peringkat</h2>
+            <p style="color: #666; margin-bottom: 20px;">Lihat siapa pemain terbaik bulan ini!</p>
+            <button class="view-leaderboard-btn" onclick="viewLeaderboard()">Lihat Peringkat</button>
+        </div>
+    </div>
+
+    <script>
+        // Cek login
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser) {
+            window.location.href = 'index.html';
+        } else {
+            document.getElementById('userName').textContent = currentUser.nama;
+            document.getElementById('userCity').textContent = currentUser.kota;
+        }
+
+        function playGame(gameUrl) {
+            window.location.href = gameUrl;
+        }
+
+        function viewLeaderboard() {
+            window.location.href = 'leaderboard.html';
+        }
+
+        function logout() {
+            if (confirm('Yakin ingin keluar?')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>

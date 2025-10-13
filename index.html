@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Emydn Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://kit.fontawesome.com/a2d9d5d7b4.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <!-- HEADER -->
+  <header class="hero">
+    <div class="header-inner">
+      <img src="logo.png" alt="Emydn Logo" class="logo">
+      <div class="hero-text">
+        <h1>Emydn Portal</h1>
+        <p>Gerbang menuju karya dan inovasi digital dari <strong>Emydn Group</strong> —  
+        membangun masa depan melalui <em>teknologi, edukasi, dan kreativitas.</em></p>
+      </div>
+    </div>
+  </header>
+
+  <!-- SECTIONS -->
+  <main>
+    <!-- 1. EMYDN GAMES -->
+    <section class="project-section" data-anim>
+      <div class="project-image">
+        <img src="https://cdn.pixabay.com/photo/2017/01/31/13/14/keyboard-2029442_1280.jpg" alt="Emydn Games">
+      </div>
+      <div class="project-content">
+        <h2>Emydn Games</h2>
+        <p>Platform permainan edukatif yang menyenangkan dan interaktif.  
+        Asah logika, strategi, dan kreativitas melalui berbagai game seru yang dirancang untuk semua usia.  
+        Cocok untuk belajar sambil bermain!</p>
+        <p class="status">📅 <strong>Status:</strong> Masih tahap pengembangan oleh tim developer. <br>🚀 <strong>Rilis:</strong> Q1 2026</p>
+        <a href="emydn-games/index.html" class="btn active">Mulai Permainan</a>
+      </div>
+    </section>
+
+    <!-- 2. EMYDN E-LEARNING -->
+    <section class="project-section reverse" data-anim>
+      <div class="project-image">
+        <img src="https://cdn.pixabay.com/photo/2015/07/17/22/43/student-849825_1280.jpg" alt="Emydn E-learning">
+      </div>
+      <div class="project-content">
+        <h2>Emydn E-Learning</h2>
+        <p>Belajar di mana saja dan kapan saja.  
+        Platform <strong>LMS (Learning Management System)</strong> kami mendukung video pembelajaran,  
+        kuis interaktif, forum diskusi, dan sertifikat digital.  
+        Hadir untuk membantu pelajar dan profesional berkembang lebih cepat.</p>
+        <p class="status">📅 <strong>Status:</strong> Masih tahap pengembangan oleh tim developer. <br>🚀 <strong>Rilis:</strong> Q4 2025</p>
+        <span class="btn disabled">Coming Soon</span>
+      </div>
+    </section>
+
+    <!-- 3. EMYDN UMKM -->
+    <section class="project-section" data-anim>
+      <div class="project-image">
+        <img src="https://cdn.pixabay.com/photo/2017/06/10/07/18/market-2385379_1280.jpg" alt="Emydn UMKM">
+      </div>
+      <div class="project-content">
+        <h2>Emydn UMKM</h2>
+        <p>Wadah digital bagi pelaku <strong>UMKM</strong> untuk mengembangkan bisnisnya.  
+        Fasilitasi promosi produk, pengelolaan keuangan sederhana,  
+        serta pelatihan digital marketing agar usaha makin maju dan dikenal luas.</p>
+        <p class="status">📅 <strong>Status:</strong> Masih tahap pengembangan oleh tim developer. <br>🚀 <strong>Rilis:</strong> Q4 2025</p>
+        <span class="btn disabled">Coming Soon</span>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-primary text-white py-12">
+    <div class="container mx-auto px-6">
+      <div class="grid md:grid-cols-3 gap-8">
+        <div>
+          <h3 class="text-2xl font-bold mb-4">Emydn Group</h3>
+          <p class="text-gray-300">
+            We Build, Educate, and Innovate.<br>
+            Membangun masa depan melalui teknologi, edukasi, dan inovasi.
+          </p>
+        </div>
+        <div>
+          <h4 class="text-xl font-semibold mb-4">Alamat</h4>
+          <p class="text-gray-300">
+            Jl Wijaya 1 No 54, Kebayoran Baru, Jakarta, Indonesia<br>
+            Email: info@emydngroup.com<br>
+            Phone: +62 858-1967-2814
+          </p>
+        </div>
+        <div>
+          <h4 class="text-xl font-semibold mb-4">Ikuti Kami</h4>
+          <div class="flex space-x-4 social-icons">
+            <a href="https://www.facebook.com/rinduu28/" target="_blank"><i class="fab fa-facebook"></i></a>
+            <a href="https://www.instagram.com/emydnn_/" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://x.com/diki_yogi" target="_blank"><i class="fab fa-twitter"></i></a>
+            <a href="https://www.tiktok.com/@emydn.group" target="_blank"><i class="fab fa-tiktok"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+        <p class="text-gray-300">&copy; 2025 Emydn Group. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const elements = document.querySelectorAll("[data-anim]");
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("animate");
+          observer.unobserve(entry.target);
+        }
+      });
+    });
+    elements.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

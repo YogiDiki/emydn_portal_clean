@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tebak Lokasi - Emydn EduGames</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #8B0000, #DC143C);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .score-info {
+            color: #8B0000;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .back-btn {
+            padding: 10px 20px;
+            background: #8B0000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .game-area {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        .game-title {
+            color: #8B0000;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .question-number {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .timer-container {
+            margin-bottom: 20px;
+        }
+        .timer {
+            font-size: 2em;
+            color: #8B0000;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #8B0000;
+            transition: width 1s linear;
+        }
+        .clue-box {
+            background: #f8f8f8;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 30px 0;
+            font-size: 1.3em;
+            color: #333;
+            border: 3px dashed #8B0000;
+        }
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .option-btn {
+            padding: 20px;
+            background: #f8f8f8;
+            border: 3px solid #ddd;
+            border-radius: 10px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #333;
+        }
+        .option-btn:hover {
+            background: #8B0000;
+            color: white;
+            border-color: #8B0000;
+            transform: translateY(-5px);
+        }
+        .option-btn.selected {
+            background: #8B0000;
+            color: white;
+            border-color: #8B0000;
+        }
+        .submit-btn {
+            padding: 15px 50px;
+            background: #8B0000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .submit-btn:hover {
+            background: #DC143C;
+        }
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .result-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        .modal-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+        .modal-title {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #8B0000;
+        }
+        .modal-text {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+        .modal-btn {
+            padding: 12px 30px;
+            background: #8B0000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .final-score {
+            background: #f8f8f8;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .final-score h3 {
+            color: #8B0000;
+            margin-bottom: 10px;
+        }
+        @media (max-width: 768px) {
+            .game-area {
+                padding: 20px;
+            }
+            .clue-box {
+                padding: 20px;
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="score-info">
+                🎯 Skor: <span id="score">0</span>
+            </div>
+            <a href="menu.html" class="back-btn">← Kembali</a>
+        </div>
+
+        <div class="game-area">
+            <h1 class="game-title">🌍 Tebak Lokasi Indonesia</h1>
+            <p class="question-number">Soal <span id="questionNum">1</span> dari 20</p>
+            
+            <div class="timer-container">
+                <div class="timer" id="timer">25</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <div class="clue-box" id="clueBox">
+                Memuat soal...
+            </div>
+
+            <div class="options-container" id="optionsContainer">
+                <!-- Options will be loaded here -->
+            </div>
+
+            <button class="submit-btn" id="submitBtn" onclick="checkAnswer()" disabled>Kirim Jawaban</button>
+        </div>
+    </div>
+
+    <div class="result-modal" id="resultModal">
+        <div class="modal-content">
+            <div class="modal-icon" id="modalIcon">✅</div>
+            <h2 class="modal-title" id="modalTitle">Benar!</h2>
+            <p class="modal-text" id="modalText">Jawaban kamu tepat!</p>
+            <button class="modal-btn" onclick="nextQuestion()">Lanjut</button>
+        </div>
+    </div>
+
+    <div class="result-modal" id="finalModal">
+        <div class="modal-content">
+            <div class="modal-icon">🎉</div>
+            <h2 class="modal-title">Permainan Selesai!</h2>
+            <div class="final-score">
+                <h3>Skor Akhir</h3>
+                <p style="font-size: 2em; color: #8B0000; font-weight: bold;"><span id="finalScore">0</span></p>
+                <p style="color: #666;">Jawaban Benar: <span id="correctAnswers">0</span>/20</p>
+            </div>
+            <button class="modal-btn" onclick="playAgain()">Main Lagi</button>
+            <button class="modal-btn" onclick="goToMenu()">Pilih Game Lain</button>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser) {
+            window.location.href = 'index.html';
+        }
+
+        let allSoal = JSON.parse(localStorage.getItem('soalTebakLokasi'));
+        let selectedSoal = shuffleArray([...allSoal]).slice(0, 20);
+        let currentQuestion = 0;
+        let score = 0;
+        let correctCount = 0;
+        let timer;
+        let timeLeft;
+        let selectedAnswer = null;
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function getTimerByLevel(level) {
+            switch(level) {
+                case 'mudah': return 25;
+                case 'sedang': return 20;
+                case 'sulit': return 15;
+                default: return 20;
+            }
+        }
+
+        function loadQuestion() {
+            if (currentQuestion >= selectedSoal.length) {
+                endGame();
+                return;
+            }
+
+            const soal = selectedSoal[currentQuestion];
+            document.getElementById('questionNum').textContent = currentQuestion + 1;
+            document.getElementById('clueBox').textContent = soal.clue;
+            
+            // Load options
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            selectedAnswer = null;
+            document.getElementById('submitBtn').disabled = true;
+            
+            const shuffledOptions = shuffleArray([...soal.options]);
+            shuffledOptions.forEach(option => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = option;
+                btn.onclick = () => selectOption(btn, option);
+                optionsContainer.appendChild(btn);
+            });
+            
+            timeLeft = getTimerByLevel(soal.level);
+            startTimer();
+        }
+
+        function selectOption(btn, answer) {
+            // Remove previous selection
+            document.querySelectorAll('.option-btn').forEach(b => {
+                b.classList.remove('selected');
+            });
+            
+            // Add selection to clicked button
+            btn.classList.add('selected');
+            selectedAnswer = answer;
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        function startTimer() {
+            clearInterval(timer);
+            const maxTime = timeLeft;
+            document.getElementById('timer').textContent = timeLeft;
+            document.getElementById('progressFill').style.width = '100%';
+
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').textContent = timeLeft;
+                const percentage = (timeLeft / maxTime) * 100;
+                document.getElementById('progressFill').style.width = percentage + '%';
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    showResult(false, selectedSoal[currentQuestion].answer);
+                }
+            }, 1000);
+        }
+
+        function checkAnswer() {
+            clearInterval(timer);
+            
+            if (!selectedAnswer) return;
+            
+            const correctAnswer = selectedSoal[currentQuestion].answer;
+            const isCorrect = selectedAnswer === correctAnswer;
+            
+            if (isCorrect) {
+                score += 10;
+                correctCount++;
+                document.getElementById('score').textContent = score;
+            }
+            
+            showResult(isCorrect, correctAnswer);
+        }
+
+        function showResult(isCorrect, correctAnswer) {
+            const modal = document.getElementById('resultModal');
+            const icon = document.getElementById('modalIcon');
+            const title = document.getElementById('modalTitle');
+            const text = document.getElementById('modalText');
+
+            if (isCorrect) {
+                icon.textContent = '✅';
+                title.textContent = 'Benar!';
+                text.textContent = 'Hebat! Kamu tahu lokasinya!';
+            } else {
+                icon.textContent = '❌';
+                title.textContent = 'Salah!';
+                text.textContent = `Jawaban yang benar: ${correctAnswer}`;
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function nextQuestion() {
+            document.getElementById('resultModal').style.display = 'none';
+            currentQuestion++;
+            loadQuestion();
+        }
+
+        function endGame() {
+            clearInterval(timer);
+            
+            let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+            leaderboard.push({
+                nama: currentUser.nama,
+                kota: currentUser.kota,
+                score: score,
+                game: 'Tebak Lokasi',
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('correctAnswers').textContent = correctCount;
+            document.getElementById('finalModal').style.display = 'flex';
+        }
+
+        function playAgain() {
+            location.reload();
+        }
+
+        function goToMenu() {
+            window.location.href = 'menu.html';
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
