@@ -1,122 +1,455 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Emydn Portal</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://kit.fontawesome.com/a2d9d5d7b4.js" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMYDN Portal - Karya Digital EMYDN GROUP</title>
+    <meta name="description" content="Portal produk dan karya digital EMYDN GROUP - E-Learning, Educational Games, dan UMKM Management System">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-  <!-- HEADER -->
-  <header class="hero">
-    <div class="header-inner">
-      <img src="logo.png" alt="Emydn Logo" class="logo">
-      <div class="hero-text">
-        <h1>Emydn Portal</h1>
-        <p>Gerbang menuju karya dan inovasi digital dari <strong>Emydn Group</strong> —  
-        membangun masa depan melalui <em>teknologi, edukasi, dan kreativitas.</em></p>
-      </div>
-    </div>
-  </header>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#home" class="logo">
+                <img src="logo.png" alt="EMYDN Logo" onerror="this.style.display='none'">
+                EMYDN
+            </a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home">Beranda</a></li>
+                <li><a href="#products">Produk</a></li>
+                <li><a href="#features">Keunggulan</a></li>
+                <li><a href="https://emydngroup.com" target="_blank">Tentang EMYDN</a></li>
+                <li><a href="https://emydngroup.com#contact" class="btn-contact" target="_blank">Hubungi Kami</a></li>
+            </ul>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
 
-  <!-- SECTIONS -->
-  <main>
-    <!-- 1. EMYDN GAMES -->
-    <section class="project-section" data-anim>
-      <div class="project-image">
-        <img src="https://cdn.pixabay.com/photo/2017/01/31/13/14/keyboard-2029442_1280.jpg" alt="Emydn Games">
-      </div>
-      <div class="project-content">
-        <h2>Emydn Games</h2>
-        <p>Platform permainan edukatif yang menyenangkan dan interaktif.  
-        Asah logika, strategi, dan kreativitas melalui berbagai game seru yang dirancang untuk semua usia.  
-        Cocok untuk belajar sambil bermain!</p>
-        <p class="status">📅 <strong>Status:</strong> Masih tahap pengembangan oleh tim developer. <br>🚀 <strong>Rilis:</strong> Q1 2026</p>
-        <a href="emydn-games/index.html" class="btn active">Mulai Permainan</a>
-      </div>
+    <section class="hero" id="home">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>
+                    Portal Karya Digital
+                    <span>EMYDN GROUP</span>
+                </h1>
+                <p>
+                    <strong>EMYDN Portal</strong> adalah pusat karya dan produk digital unggulan dari EMYDN GROUP. 
+                    Kami menghadirkan solusi E-Learning, Educational Games, dan sistem manajemen UMKM yang inovatif untuk transformasi digital Indonesia.
+                </p>
+                <a href="#products" class="cta-button">Jelajahi Produk Kami</a>
+            </div>
+            <div class="hero-image">
+                <div class="floating-card card-1">
+                    <div class="card-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="card-title">E-Learning Platform</div>
+                </div>
+                <div class="floating-card card-2">
+                    <div class="card-icon">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <div class="card-title">Educational Games</div>
+                </div>
+                <div class="floating-card card-3">
+                    <div class="card-icon">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <div class="card-title">UMKM System</div>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <!-- 2. EMYDN E-LEARNING -->
-    <section class="project-section reverse" data-anim>
-      <div class="project-image">
-        <img src="https://cdn.pixabay.com/photo/2015/07/17/22/43/student-849825_1280.jpg" alt="Emydn E-learning">
-      </div>
-      <div class="project-content">
-        <h2>Emydn E-Learning</h2>
-        <p>Belajar di mana saja dan kapan saja.  
-        Platform <strong>LMS (Learning Management System)</strong> kami mendukung video pembelajaran,  
-        kuis interaktif, forum diskusi, dan sertifikat digital.  
-        Hadir untuk membantu pelajar dan profesional berkembang lebih cepat.</p>
-        <p class="status">📅 <strong>Status:</strong> Masih tahap pengembangan oleh tim developer. <br>🚀 <strong>Rilis:</strong> Q4 2025</p>
-        <span class="btn disabled">Coming Soon</span>
-      </div>
+    <section class="products" id="products">
+        <div class="section-header">
+            <div class="section-tag">Produk Kami</div>
+            <h2>Solusi Digital Terpadu</h2>
+            <p>Jelajahi berbagai produk inovatif yang kami kembangkan untuk memajukan pendidikan dan bisnis Indonesia</p>
+        </div>
+        <div class="products-grid">
+            
+            <div class="product-card" onclick="window.location.href='emydn-games/'">
+                <div class="product-image games">
+                    <i class="fas fa-gamepad"></i>
+                </div>
+                <div class="product-content">
+                    <h3>EMYDN Educational Games</h3>
+                    <p class="product-subtitle">Platform Game Edukasi Interaktif & Menyenangkan</p>
+                    <p>Koleksi game edukatif berbasis web yang menggabungkan pembelajaran dengan gamifikasi. Tingkatkan kemampuan kognitif, bahasa, dan pengetahuan geografis dengan cara yang menyenangkan.</p>
+                    
+                    <div class="features-box">
+                        <div class="feature-item-box">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>Susun Huruf</strong>
+                                <span>Game menyusun huruf menjadi kata yang melatih vocabulary dan spelling</span>
+                            </div>
+                        </div>
+                        <div class="feature-item-box">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>Tebak Kata</strong>
+                                <span>Permainan tebak kata dengan petunjuk untuk meningkatkan daya pikir</span>
+                            </div>
+                        </div>
+                        <div class="feature-item-box">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>Tebak Lokasi</strong>
+                                <span>Game edukatif geografi untuk mengenal wilayah Indonesia dan dunia</span>
+                            </div>
+                        </div>
+                        <div class="feature-item-box">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>Leaderboard Global</strong>
+                                <span>Sistem ranking pemain untuk kompetisi sehat dan motivasi belajar</span>
+                            </div>
+                        </div>
+                        <div class="feature-item-box">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>Multi-level</strong>
+                                <span>Berbagai tingkat kesulitan dari pemula hingga ahli</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-tags">
+                        <span class="tag">Game Edukasi</span>
+                        <span class="tag">Belajar Sambil Bermain</span>
+                        <span class="tag">Susun Huruf</span>
+                        <span class="tag">Tebak Kata</span>
+                        <span class="tag">Geografi</span>
+                        <span class="tag">Leaderboard</span>
+                        <span class="tag">Free to Play</span>
+                    </div>
+                    
+                    <a href="emydn-games/" class="product-link btn-primary">
+                        Main Sekarang <i class="fas fa-play"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image elearning">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="product-content">
+                    <h3>EMYDN E-Learning Platform</h3>
+                    <p class="product-subtitle">Sistem Pembelajaran Online Terpadu & Komprehensif</p>
+                    <p>Platform Learning Management System (LMS) modern untuk institusi pendidikan, pelatihan korporat, dan pembelajaran mandiri dengan fitur lengkap dan user-friendly.</p>
+                    
+                    <div class="features-box">
+                        <div class="feature-item-box">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>Manajemen Kursus</strong>
+                                <span>Buat dan kelola kursus online dengan mudah menggunakan course builder</span>
+                            </div>
+                        </div>
+                        <div class="feature-item-box">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>Video Learning</strong>
+                                <span>Upload dan streaming video pembelajaran dengan player interaktif</span>
+                            </div>
+                        </div>
+                        <div class="feature-item-box">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>Quiz & Assessment</strong>
+                                <span>Sistem ujian online otomatis dengan berbagai tipe soal (pilihan ganda, essay, true/false)</span>
+                            </div>
+                        </div>
+                        <div class="feature-item-box">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>Progress Tracking</strong>
+                                <span>Monitor perkembangan belajar siswa dengan dashboard analytics</span>
+                            </div>
+                        </div>
+                        <div class="feature-item-box">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>Sertifikat Digital</strong>
+                                <span>Generate sertifikat otomatis setelah menyelesaikan kursus</span>
+                            </div>
+                        </div>
+                        <div class="feature-item-box">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>Forum Diskusi</strong>
+                                <span>Ruang diskusi interaktif antara siswa dan pengajar</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-tags">
+                        <span class="tag">LMS</span>
+                        <span class="tag">E-Learning</span>
+                        <span class="tag">Online Course</span>
+                        <span class="tag">Video Learning</span>
+                        <span class="tag">Quiz Online</span>
+                        <span class="tag">Sertifikat Digital</span>
+                    </div>
+                    
+                    <a href="#" class="product-link btn-disabled">
+                        Dalam Pengembangan
+                    </a>
+                    <p class="development-notice">Dikembangkan oleh developer EMYDN. Rilis diperkirakan Q1 2026</p>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image umkm">
+                    <i class="fas fa-store"></i>
+                </div>
+                <div class="product-content">
+                    <h3>EMYDN UMKM Management System</h3>
+                    <p class="product-subtitle">Solusi Bisnis Digital untuk UMKM Indonesia</p>
+                    <p>Sistem manajemen bisnis terintegrasi khusus untuk UMKM (Usaha Mikro Kecil Menengah) yang membantu digitalisasi operasional bisnis dari inventory hingga laporan keuangan.</p>
+                    
+                    <div class="features-box">
+                        <div class="feature-item-box">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>Point of Sale (POS)</strong>
+                                <span>Sistem kasir digital untuk transaksi penjualan cepat dan mudah</span>
+                            </div>
+                        </div>
+                        <div class="feature-item-box">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>Inventory Management</strong>
+                                <span>Kelola stok barang, purchase order, dan supplier dengan efisien</span>
+                            </div>
+                        </div>
+                        <div class="feature-item-box">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>Akuntansi & Keuangan</strong>
+                                <span>Pembukuan otomatis, jurnal, buku besar, dan laporan laba rugi</span>
+                            </div>
+                        </div>
+                        <div class="feature-item-box">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>Customer Management</strong>
+                                <span>Database pelanggan dengan riwayat transaksi dan loyalty program</span>
+                            </div>
+                        </div>
+                        <div class="feature-item-box">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>Multi Outlet</strong>
+                                <span>Kelola beberapa cabang toko dalam satu sistem terpusat</span>
+                            </div>
+                        </div>
+                        <div class="feature-item-box">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>Business Analytics</strong>
+                                <span>Dashboard analitik penjualan, profit, dan performa bisnis real-time</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-tags">
+                        <span class="tag">UMKM</span>
+                        <span class="tag">POS System</span>
+                        <span class="tag">Inventory</span>
+                        <span class="tag">Akuntansi</span>
+                        <span class="tag">Kasir Digital</span>
+                        <span class="tag">Business Management</span>
+                    </div>
+                    
+                    <a href="#" class="product-link btn-disabled">
+                        Dalam Pengembangan
+                    </a>
+                    <p class="development-notice">Dikembangkan oleh developer EMYDN. Rilis diperkirakan Q1 2026</p>
+                </div>
+            </div>
+            
+            <div class="product-card">
+                <div class="product-image gallery">
+                    <i class="fas fa-trophy"></i> 
+                </div>
+                <div class="product-content">
+                    <h3>EMYDN GALERI KARYA DIGITAL</h3>
+                    <p class="product-subtitle">Hub Prestasi dan Arsip Digital Lintas Generasi Bangsa</p>
+                    <p>Platform pameran dan pengarsipan prestasi anak bangsa, mencakup karya Seni, Inovasi, Akademik, dan Kejuaraan Olahraga/Esports. Menjadi jembatan inspirasi antara senior dan generasi muda.</p>
+                    
+                    <div class="features-box">
+                        <div class="feature-item-box">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>Multi-Kategori Showcase</strong>
+                                <span>Memamerkan prestasi dari berbagai sektor (Seni, Inovasi, Olahraga, Akademik)</span>
+                            </div>
+                        </div>
+                        <div class="feature-item-box">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>Koneksi Lintas Generasi</strong>
+                                <span>Menghubungkan karya senior dengan talenta muda (Generasi Beta)</span>
+                            </div>
+                        </div>
+                        <div class="feature-item-box">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>Portofolio Digital Simpel</strong>
+                                <span>Kemudahan upload dan pengarsipan dengan 7 data inti</span>
+                            </div>
+                        </div>
+                        <div class="feature-item-box">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>Inspirasi & Motivasi</strong>
+                                <span>Karya dan prestasi menjadi sumber inspirasi</span>
+                            </div>
+                        </div>
+                        <div class="feature-item-box">
+                            <i class="fas fa-check-circle"></i>
+                            <div>
+                                <strong>Pencarian Talenta</strong>
+                                <span>Memudahkan institusi atau UMKM mencari talenta dengan prestasi yang terbukti</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="product-tags">
+                        <span class="tag">Showcase</span>
+                        <span class="tag">Portofolio</span>
+                        <span class="tag">Seni & Kreativitas</span>
+                        <span class="tag">Inovasi</span>
+                        <span class="tag">Prestasi Olahraga</span>
+                        <span class="tag">Talent Hub</span>
+                        <span class="tag">Arsip Digital</span>
+                    </div>
+                    
+                    <a href="#" class="product-link btn-disabled">
+                        Dalam Pengembangan
+                    </a>
+                    <p class="development-notice">Dikembangkan oleh developer EMYDN. Rilis diperkirakan Q1 2026</p>
+                </div>
+            </div>
+            
+        </div>
     </section>
 
-    <!-- 3. EMYDN UMKM -->
-    <section class="project-section" data-anim>
-      <div class="project-image">
-        <img src="https://cdn.pixabay.com/photo/2017/06/10/07/18/market-2385379_1280.jpg" alt="Emydn UMKM">
-      </div>
-      <div class="project-content">
-        <h2>Emydn UMKM</h2>
-        <p>Wadah digital bagi pelaku <strong>UMKM</strong> untuk mengembangkan bisnisnya.  
-        Fasilitasi promosi produk, pengelolaan keuangan sederhana,  
-        serta pelatihan digital marketing agar usaha makin maju dan dikenal luas.</p>
-        <p class="status">📅 <strong>Status:</strong> Masih tahap pengembangan oleh tim developer. <br>🚀 <strong>Rilis:</strong> Q4 2025</p>
-        <span class="btn disabled">Coming Soon</span>
-      </div>
+    <section class="features" id="features">
+        <div class="section-header">
+            <div class="section-tag">Keunggulan Kami</div>
+            <h2>Mengapa Memilih EMYDN?</h2>
+            <p>Kami berkomitmen memberikan solusi terbaik dengan teknologi terkini</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <h3>Inovatif</h3>
+                <p>Menggunakan teknologi terkini dan pendekatan kreatif dalam setiap produk</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>User-Friendly</h3>
+                <p>Desain intuitif yang mudah digunakan untuk semua kalangan</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <h3>Harga Terjangkau</h3>
+                <p>Solusi digital berkualitas dengan harga yang kompetitif dan ramah kantong</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <h3>Support 24/7</h3>
+                <p>Tim support yang siap membantu kapan saja Anda membutuhkan</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Meningkatkan Produktivitas</h3>
+                <p>Solusi yang dirancang untuk meningkatkan efisiensi dan produktivitas</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-award"></i>
+                </div>
+                <h3>Kualitas Terjamin</h3>
+                <p>Produk berkualitas tinggi dengan standar pengembangan profesional</p>
+            </div>
+        </div>
     </section>
-  </main>
 
-  <!-- FOOTER -->
-  <footer class="bg-primary text-white py-12">
-    <div class="container mx-auto px-6">
-      <div class="grid md:grid-cols-3 gap-8">
-        <div>
-          <h3 class="text-2xl font-bold mb-4">Emydn Group</h3>
-          <p class="text-gray-300">
-            We Build, Educate, and Innovate.<br>
-            Membangun masa depan melalui teknologi, edukasi, dan inovasi.
-          </p>
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <div class="footer-logo">EMYDN GROUP</div>
+                <p class="footer-desc">
+                    Kami adalah perusahaan teknologi yang berfokus pada pengembangan solusi digital inovatif untuk pendidikan dan bisnis di Indonesia.
+                </p>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/rinduu28/" target="_blank" aria-label="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://www.instagram.com/emydnn_/" target="_blank" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://x.com/diki_yogi" target="_blank" aria-label="Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@emydn.group" target="_blank" aria-label="TikTok">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                    <a href="https://wa.me/6285819672814" target="_blank" aria-label="WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                </div>
+            </div>
+            <div>
+                <h3 class="footer-title">Produk</h3>
+                <ul class="footer-links">
+                    <li><a href="#products">EMYDN Games</a></li>
+                    <li><a href="#products">E-Learning Platform</a></li>
+                    <li><a href="#products">UMKM System</a></li>
+                    <li><a href="#products">Galeri Karya Digital</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="footer-title">Perusahaan</h3>
+                <ul class="footer-links">
+                    <li><a href="https://emydngroup.com" target="_blank">Tentang Kami</a></li>
+                    <li><a href="https://emydngroup.com#team" target="_blank">Tim</a></li>
+                    <li><a href="https://emydngroup.com#contact" target="_blank">Kontak</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="footer-title">Hubungi Kami</h3>
+                <ul class="footer-links">
+                    <li><a href="mailto:info@emydngroup.com">info@emydngroup.com</a></li>
+                    <li><a href="https://wa.me/6285819672814" target="_blank">WhatsApp</a></li>
+                    <li><a href="https://emydngroup.com" target="_blank">Website Utama</a></li>
+                </ul>
+            </div>
         </div>
-        <div>
-          <h4 class="text-xl font-semibold mb-4">Alamat</h4>
-          <p class="text-gray-300">
-            Jl Wijaya 1 No 54, Kebayoran Baru, Jakarta, Indonesia<br>
-            Email: info@emydngroup.com<br>
-            Phone: +62 858-1967-2814
-          </p>
+        <div class="footer-bottom">
+            <p>&copy; 2025 EMYDN GROUP. All Rights Reserved. | Powered by Innovation</p>
         </div>
-        <div>
-          <h4 class="text-xl font-semibold mb-4">Ikuti Kami</h4>
-          <div class="flex space-x-4 social-icons">
-            <a href="https://www.facebook.com/rinduu28/" target="_blank"><i class="fab fa-facebook"></i></a>
-            <a href="https://www.instagram.com/emydnn_/" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a href="https://x.com/diki_yogi" target="_blank"><i class="fab fa-twitter"></i></a>
-            <a href="https://www.tiktok.com/@emydn.group" target="_blank"><i class="fab fa-tiktok"></i></a>
-          </div>
-        </div>
-      </div>
-      <div class="border-t border-gray-700 mt-8 pt-8 text-center">
-        <p class="text-gray-300">&copy; 2025 Emydn Group. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
+    </footer>
 
-  <script>
-    const elements = document.querySelectorAll("[data-anim]");
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("animate");
-          observer.unobserve(entry.target);
-        }
-      });
-    });
-    elements.forEach(el => observer.observe(el));
-  </script>
+    <script src="script.js"></script>
 </body>
 </html>
