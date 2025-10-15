@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://yogidiki.github.io/emydn_portal/sitemap.xml
+Sitemap: https://www.emydngroup.my.id/sitemap.xml
