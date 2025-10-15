@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://yogidiki.github.io/emydn_portal/sitemap.xml
