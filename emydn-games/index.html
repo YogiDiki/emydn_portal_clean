@@ -3,28 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Masuk ke EMYDN EduGames: main game edukasi seperti Tebak Kata, Susun Huruf, dan Tebak Lokasi. Gratis dan ramah anak.">
-    <meta name="robots" content="index, follow">
-    <meta name="keywords" content="Game Edukasi, EMYDN Games, Tebak Kata, Susun Huruf, Tebak Lokasi, permainan edukasi, game pendidikan, bermain sambil belajar">
-    <link rel="canonical" href="https://www.emydngroup.my.id/emydn-games/">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Login - EMYDN EduGames">
-    <meta property="og:description" content="Masuk dan mulai main game edukasi EMYDN: Tebak Kata, Susun Huruf, Tebak Lokasi.">
-    <meta property="og:url" content="https://www.emydngroup.my.id/emydn-games/">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&q=80">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Login - EMYDN EduGames">
-    <meta name="twitter:description" content="Masuk dan mulai main game edukasi EMYDN: Tebak Kata, Susun Huruf, Tebak Lokasi.">
-    <meta name="twitter:image" content="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&q=80">
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "EMYDN EduGames",
-      "url": "https://www.emydngroup.my.id/emydn-games/"
-    }
-    </script>
     <title>Login - Emydn EduGames</title>
+    
     <style>
         * {
             margin: 0;
@@ -145,126 +125,221 @@
         </form>
     </div>
 
-    <script>
-        // Inisialisasi data soal jika belum ada
-        if (!localStorage.getItem('soalTebakKata')) {
-            const soalTebakKata = [
-                { clue: "Ibukota Indonesia", answer: "Jakarta", level: "mudah" },
-                { clue: "Lambang negara Indonesia", answer: "Garuda", level: "mudah" },
-                { clue: "Presiden pertama Indonesia", answer: "Soekarno", level: "mudah" },
-                { clue: "Bahasa pemrograman untuk web", answer: "JavaScript", level: "sedang" },
-                { clue: "Planet terdekat dengan matahari", answer: "Merkurius", level: "sedang" },
-                { clue: "Hewan tercepat di darat", answer: "Cheetah", level: "sedang" },
-                { clue: "Sungai terpanjang di dunia", answer: "Amazon", level: "sulit" },
-                { clue: "Penemu lampu pijar", answer: "Edison", level: "sulit" },
-                { clue: "Gunung tertinggi di Indonesia", answer: "Puncak Jaya", level: "sulit" },
-                { clue: "Ibu kota Jepang", answer: "Tokyo", level: "mudah" },
-                { clue: "Alat musik tradisional Jawa Barat", answer: "Angklung", level: "sedang" },
-                { clue: "Benua terbesar di dunia", answer: "Asia", level: "mudah" },
-                { clue: "Gas yang diperlukan tumbuhan untuk fotosintesis", answer: "Karbondioksida", level: "sulit" },
-                { clue: "Penulis novel Laskar Pelangi", answer: "Andrea Hirata", level: "sulit" },
-                { clue: "Satelit alami bumi", answer: "Bulan", level: "mudah" },
-                { clue: "Ibukota Perancis", answer: "Paris", level: "mudah" },
-                { clue: "Pahlawan yang dijuluki Bapak Proklamator", answer: "Soekarno", level: "sedang" },
-                { clue: "Organ tubuh yang memompa darah", answer: "Jantung", level: "mudah" },
-                { clue: "Mata uang negara Jepang", answer: "Yen", level: "sedang" },
-                { clue: "Nama lain untuk burung hantu", answer: "Kukuk", level: "sulit" }
-            ];
-            localStorage.setItem('soalTebakKata', JSON.stringify(soalTebakKata));
-        }
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
-        if (!localStorage.getItem('soalSusunHuruf')) {
-            const soalSusunHuruf = [
-                { answer: "Merah", level: "mudah" },
-                { answer: "Putih", level: "mudah" },
-                { answer: "Biru", level: "mudah" },
-                { answer: "Kuning", level: "mudah" },
-                { answer: "Hijau", level: "mudah" },
-                { answer: "Sekolah", level: "sedang" },
-                { answer: "Rumah", level: "mudah" },
-                { answer: "Komputer", level: "sedang" },
-                { answer: "Pendidikan", level: "sulit" },
-                { answer: "Keluarga", level: "sedang" },
-                { answer: "Pancasila", level: "sulit" },
-                { answer: "Merdeka", level: "sedang" },
-                { answer: "Prestasi", level: "sulit" },
-                { answer: "Teknologi", level: "sulit" },
-                { answer: "Budaya", level: "sedang" },
-                { answer: "Makanan", level: "sedang" },
-                { answer: "Kesehatan", level: "sulit" },
-                { answer: "Olahraga", level: "sedang" },
-                { answer: "Persahabatan", level: "sulit" },
-                { answer: "Kreativitas", level: "sulit" }
-            ];
-            localStorage.setItem('soalSusunHuruf', JSON.stringify(soalSusunHuruf));
-        }
+        // --- KONFIGURASI FIREBASE (HARDCODE) ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyDomXTsnEtLiRdpVfYp7wWBXLixdIm5P10",
+            authDomain: "emydn-games.firebaseapp.com",
+            databaseURL: "https://emydn-games-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "emydn-games",
+            storageBucket: "emydn-games.firebasestorage.app",
+            messagingSenderId: "673352605525",
+            appId: "1:673352605525:web:12a49f2631d8313554d9dc",
+            measurementId: "G-SW7H07QSD6"
+        };
+        
+        let db; // Variabel untuk menyimpan instance Database
+        let authReady = false; // Flag untuk status otentikasi
+        
+        // 1. FUNGSI INISIALISASI & AUTENTIKASI ASYNC (Menggantikan Promise)
+        const initializeFirebase = async () => {
+            if (authReady) return; // Jika sudah siap, keluar
 
-        if (!localStorage.getItem('soalTebakLokasi')) {
-            const soalTebakLokasi = [
-                { clue: "Ibukota Jawa Barat", options: ["Surabaya", "Bandung", "Medan"], answer: "Bandung", level: "sedang" },
-                { clue: "Ibukota Jawa Timur", options: ["Surabaya", "Semarang", "Jakarta"], answer: "Surabaya", level: "sedang" },
-                { clue: "Kota Gudeg", options: ["Yogyakarta", "Solo", "Bandung"], answer: "Yogyakarta", level: "mudah" },
-                { clue: "Ibukota Sumatera Utara", options: ["Medan", "Padang", "Palembang"], answer: "Medan", level: "mudah" },
-                { clue: "Pulau seribu candi", options: ["Jawa", "Bali", "Sumatera"], answer: "Jawa", level: "sedang" },
-                { clue: "Provinsi dengan Danau Toba", options: ["Sumatera Utara", "Sumatera Barat", "Riau"], answer: "Sumatera Utara", level: "sedang" },
-                { clue: "Kota Pahlawan", options: ["Surabaya", "Bandung", "Jakarta"], answer: "Surabaya", level: "mudah" },
-                { clue: "Ibukota Bali", options: ["Denpasar", "Singaraja", "Ubud"], answer: "Denpasar", level: "mudah" },
-                { clue: "Kota Paris Van Java", options: ["Bandung", "Jakarta", "Surabaya"], answer: "Bandung", level: "mudah" },
-                { clue: "Provinsi dengan Raja Ampat", options: ["Papua Barat", "Maluku", "Sulawesi"], answer: "Papua Barat", level: "sulit" },
-                { clue: "Ibukota Sulawesi Selatan", options: ["Makassar", "Manado", "Palu"], answer: "Makassar", level: "sedang" },
-                { clue: "Kota tempat Candi Borobudur", options: ["Magelang", "Yogyakarta", "Solo"], answer: "Magelang", level: "sulit" },
-                { clue: "Ibukota Kalimantan Timur", options: ["Samarinda", "Balikpapan", "Pontianak"], answer: "Samarinda", level: "sulit" },
-                { clue: "Provinsi dengan Danau Maninjau", options: ["Sumatera Barat", "Sumatera Utara", "Jambi"], answer: "Sumatera Barat", level: "sulit" },
-                { clue: "Kota Kembang", options: ["Bandung", "Malang", "Bogor"], answer: "Bandung", level: "mudah" },
-                { clue: "Ibukota Lampung", options: ["Bandar Lampung", "Metro", "Pringsewu"], answer: "Bandar Lampung", level: "sedang" },
-                { clue: "Pulau dengan Komodo", options: ["Nusa Tenggara Timur", "Bali", "Sulawesi"], answer: "Nusa Tenggara Timur", level: "sulit" },
-                { clue: "Ibukota Aceh", options: ["Banda Aceh", "Lhokseumawe", "Sabang"], answer: "Banda Aceh", level: "sedang" },
-                { clue: "Kota Apel", options: ["Malang", "Batu", "Kediri"], answer: "Malang", level: "sedang" },
-                { clue: "Provinsi paling timur Indonesia", options: ["Papua", "Maluku", "Sulawesi"], answer: "Papua", level: "sedang" }
-            ];
-            localStorage.setItem('soalTebakLokasi', JSON.stringify(soalTebakLokasi));
-        }
+            try {
+                // Hanya jalankan inisialisasi jika ada API Key
+                if (!firebaseConfig.apiKey) {
+                     console.error("Gagal: firebaseConfig.apiKey tidak ditemukan.");
+                     return;
+                }
+                
+                const app = initializeApp(firebaseConfig);
+                const auth = getAuth(app);
+                db = getDatabase(app);
 
-        // Cek dan reset mingguan (setiap Sabtu)
-        const today = new Date();
-        const lastReset = localStorage.getItem('lastWeeklyReset');
-        if (!lastReset || isNewWeek(new Date(lastReset), today)) {
-            localStorage.setItem('lastWeeklyReset', today.toISOString());
-        }
+                // Lakukan Otentikasi Anonim
+                await signInAnonymously(auth);
+                
+                console.log("✅ Firebase Auth dan DB berhasil diinisialisasi (Anonim).");
+                authReady = true;
 
-        // Cek dan reset bulanan leaderboard
-        const lastMonthlyReset = localStorage.getItem('lastMonthlyReset');
-        if (!lastMonthlyReset || isNewMonth(new Date(lastMonthlyReset), today)) {
-            localStorage.removeItem('leaderboard');
-            localStorage.setItem('lastMonthlyReset', today.toISOString());
-        }
+            } catch (error) {
+                console.error("❌ GAGAL menginisialisasi/autentikasi Firebase:", error);
+                authReady = false; // Pastikan flag diatur ke false jika gagal
+            }
+        };
 
-        function isNewWeek(lastDate, currentDate) {
-            const daysSince = Math.floor((currentDate - lastDate) / (1000 * 60 * 60 * 24));
-            return daysSince >= 7;
-        }
-
-        function isNewMonth(lastDate, currentDate) {
-            return lastDate.getMonth() !== currentDate.getMonth() || 
-                   lastDate.getFullYear() !== currentDate.getFullYear();
-        }
-
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const nama = document.getElementById('nama').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const kota = document.getElementById('kota').value;
-
-            if (!nama || !email || !kota) {
-                alert('Semua field harus diisi!');
-                return;
+        // 2. FUNGSI UNTUK MENGIRIM DATA LOGIN
+        const sendLoginDataToFirebase = async (userData) => {
+            // Cek apakah otentikasi sudah siap. Jika belum, coba inisialisasi ulang.
+            if (!authReady || !db) {
+                console.warn("⚠️ Firebase belum siap. Mencoba inisialisasi ulang...");
+                await initializeFirebase();
+                if (!authReady || !db) {
+                     console.error("❌ Gagal mencatat log: Firebase tidak dapat diinisialisasi.");
+                     return;
+                }
             }
 
-            const userData = { nama, email, kota };
-            localStorage.setItem('currentUser', JSON.stringify(userData));
-            
-            window.location.href = 'menu.html';
+            try {
+                // Path: /login_logs/
+                const loginsRef = ref(db, 'login_logs'); 
+                
+                await push(loginsRef, {
+                    nama: userData.nama,
+                    email: userData.email,
+                    kota: userData.kota,
+                    timestamp: new Date().toISOString()
+                });
+                console.log(`✅ Data login untuk ${userData.email} berhasil dicatat di Firebase.`);
+            } catch (error) {
+                console.error("❌ GAGAL mencatat data login ke Firebase. Detail Error:", error.message || error);
+            }
+        };
+
+        // 3. LOGIC LAIN (Inisialisasi Data Game)
+        const initializeGameData = () => {
+             if (!localStorage.getItem('soalTebakKata')) {
+                 const soalTebakKata = [
+                     { clue: "Ibukota Indonesia", answer: "Jakarta", level: "mudah" },
+                     { clue: "Lambang negara Indonesia", answer: "Garuda", level: "mudah" },
+                     { clue: "Presiden pertama Indonesia", answer: "Soekarno", level: "mudah" },
+                     { clue: "Bahasa pemrograman untuk web", answer: "JavaScript", level: "sedang" },
+                     { clue: "Planet terdekat dengan matahari", answer: "Merkurius", level: "sedang" },
+                     { clue: "Hewan tercepat di darat", answer: "Cheetah", level: "sedang" },
+                     { clue: "Sungai terpanjang di dunia", answer: "Amazon", level: "sulit" },
+                     { clue: "Penemu lampu pijar", answer: "Edison", level: "sulit" },
+                     { clue: "Gunung tertinggi di Indonesia", answer: "Puncak Jaya", level: "sulit" },
+                     { clue: "Ibu kota Jepang", answer: "Tokyo", level: "mudah" },
+                     { clue: "Alat musik tradisional Jawa Barat", answer: "Angklung", level: "sedang" },
+                     { clue: "Benua terbesar di dunia", answer: "Asia", level: "mudah" },
+                     { clue: "Gas yang diperlukan tumbuhan untuk fotosintesis", answer: "Karbondioksida", level: "sulit" },
+                     { clue: "Penulis novel Laskar Pelangi", answer: "Andrea Hirata", level: "sulit" },
+                     { clue: "Satelit alami bumi", answer: "Bulan", level: "mudah" },
+                     { clue: "Ibukota Perancis", answer: "Paris", level: "mudah" },
+                     { clue: "Pahlawan yang dijuluki Bapak Proklamator", answer: "Soekarno", level: "sedang" },
+                     { clue: "Organ tubuh yang memompa darah", answer: "Jantung", level: "mudah" },
+                     { clue: "Mata uang negara Jepang", answer: "Yen", level: "sedang" },
+                     { clue: "Nama lain untuk burung hantu", answer: "Kukuk", level: "sulit" }
+                 ];
+                 localStorage.setItem('soalTebakKata', JSON.stringify(soalTebakKata));
+             }
+
+             if (!localStorage.getItem('soalSusunHuruf')) {
+                 const soalSusunHuruf = [
+                     { answer: "Merah", level: "mudah" },
+                     { answer: "Putih", level: "mudah" },
+                     { answer: "Biru", level: "mudah" },
+                     { answer: "Kuning", level: "mudah" },
+                     { answer: "Hijau", level: "mudah" },
+                     { answer: "Sekolah", level: "sedang" },
+                     { answer: "Rumah", level: "mudah" },
+                     { answer: "Komputer", level: "sedang" },
+                     { answer: "Pendidikan", level: "sulit" },
+                     { answer: "Keluarga", level: "sedang" },
+                     { answer: "Pancasila", level: "sulit" },
+                     { answer: "Merdeka", level: "sedang" },
+                     { answer: "Prestasi", level: "sulit" },
+                     { answer: "Teknologi", level: "sulit" },
+                     { answer: "Budaya", level: "sedang" },
+                     { answer: "Makanan", level: "sedang" },
+                     { answer: "Kesehatan", level: "sulit" },
+                     { answer: "Olahraga", level: "sedang" },
+                     { answer: "Persahabatan", level: "sulit" },
+                     { answer: "Kreativitas", level: "sulit" }
+                 ];
+                 localStorage.setItem('soalSusunHuruf', JSON.stringify(soalSusunHuruf));
+             }
+
+             if (!localStorage.getItem('soalTebakLokasi')) {
+                 const soalTebakLokasi = [
+                     { clue: "Ibukota Jawa Barat", options: ["Surabaya", "Bandung", "Medan"], answer: "Bandung", level: "sedang" },
+                     { clue: "Ibukota Jawa Timur", options: ["Surabaya", "Semarang", "Jakarta"], answer: "Surabaya", level: "sedang" },
+                     { clue: "Kota Gudeg", options: ["Yogyakarta", "Solo", "Bandung"], answer: "Yogyakarta", level: "mudah" },
+                     { clue: "Ibukota Sumatera Utara", options: ["Medan", "Padang", "Palembang"], answer: "Medan", level: "mudah" },
+                     { clue: "Pulau seribu candi", options: ["Jawa", "Bali", "Sumatera"], answer: "Jawa", level: "sedang" },
+                     { clue: "Provinsi dengan Danau Toba", options: ["Sumatera Utara", "Sumatera Barat", "Riau"], answer: "Sumatera Utara", level: "sedang" },
+                     { clue: "Kota Pahlawan", options: ["Surabaya", "Bandung", "Jakarta"], answer: "Surabaya", level: "mudah" },
+                     { clue: "Ibukota Bali", options: ["Denpasar", "Singaraja", "Ubud"], answer: "Denpasar", level: "mudah" },
+                     { clue: "Kota Paris Van Java", options: ["Bandung", "Jakarta", "Surabaya"], answer: "Bandung", level: "mudah" },
+                     { clue: "Provinsi dengan Raja Ampat", options: ["Papua Barat", "Maluku", "Sulawesi"], answer: "Papua Barat", level: "sulit" },
+                     { clue: "Ibukota Sulawesi Selatan", options: ["Makassar", "Manado", "Palu"], answer: "Makassar", level: "sedang" },
+                     { clue: "Kota tempat Candi Borobudur", options: ["Magelang", "Yogyakarta", "Solo"], answer: "Magelang", level: "sulit" },
+                     { clue: "Ibukota Kalimantan Timur", options: ["Samarinda", "Balikpapan", "Pontianak"], answer: "Samarinda", level: "sulit" },
+                     { clue: "Provinsi dengan Danau Maninjau", options: ["Sumatera Barat", "Sumatera Utara", "Jambi"], answer: "Sumatera Barat", level: "sulit" },
+                     { clue: "Kota Kembang", options: ["Bandung", "Malang", "Bogor"], answer: "Bandung", level: "mudah" },
+                     { clue: "Ibukota Lampung", options: ["Bandar Lampung", "Metro", "Pringsewu"], answer: "Bandar Lampung", level: "sedang" },
+                     { clue: "Pulau dengan Komodo", options: ["Nusa Tenggara Timur", "Bali", "Sulawesi"], answer: "Nusa Tenggara Timur", level: "sulit" },
+                     { clue: "Ibukota Aceh", options: ["Banda Aceh", "Lhokseumawe", "Sabang"], answer: "Banda Aceh", level: "sedang" },
+                     { clue: "Kota Apel", options: ["Malang", "Batu", "Kediri"], answer: "Malang", level: "sedang" },
+                     { clue: "Provinsi paling timur Indonesia", options: ["Papua", "Maluku", "Sulawesi"], answer: "Papua", level: "sedang" }
+                 ];
+                 localStorage.setItem('soalTebakLokasi', JSON.stringify(soalTebakLokasi));
+             }
+
+             const today = new Date();
+             const isNewWeek = (lastDate, currentDate) => Math.floor((currentDate - lastDate) / (1000 * 60 * 60 * 24)) >= 7;
+             const isNewMonth = (lastDate, currentDate) => lastDate.getMonth() !== currentDate.getMonth() || lastDate.getFullYear() !== currentDate.getFullYear();
+             
+             // Cek dan reset mingguan/bulanan
+             const lastReset = localStorage.getItem('lastWeeklyReset');
+             if (!lastReset || isNewWeek(new Date(lastReset), today)) {
+                 localStorage.setItem('lastWeeklyReset', today.toISOString());
+             }
+
+             const lastMonthlyReset = localStorage.getItem('lastMonthlyReset');
+             if (!lastMonthlyReset || isNewMonth(new Date(lastMonthlyReset), today)) {
+                 localStorage.removeItem('leaderboard');
+                 localStorage.setItem('lastMonthlyReset', today.toISOString());
+             }
+        };
+
+        const isValidEmail = (email) => {
+            const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(String(email).toLowerCase());
+        };
+
+        // 4. LOGIC SUBMIT FORM
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeGameData(); 
+            // PENTING: Panggil inisialisasi Firebase segera saat DOM dimuat
+            initializeFirebase(); 
+
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const nama = document.getElementById('nama').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const kota = document.getElementById('kota').value;
+                let isValid = true;
+                
+                // Validasi
+                document.getElementById('namaError').style.display = 'none';
+                document.getElementById('emailError').style.display = 'none';
+                document.getElementById('kotaError').style.display = 'none';
+
+                if (!nama) { document.getElementById('namaError').style.display = 'block'; isValid = false; }
+                if (!email || !isValidEmail(email)) { 
+                    document.getElementById('emailError').textContent = email ? 'Email tidak valid' : 'Email harus diisi!';
+                    document.getElementById('emailError').style.display = 'block'; isValid = false; 
+                }
+                if (kota === "") { document.getElementById('kotaError').style.display = 'block'; isValid = false; }
+
+                if (!isValid) { return; }
+
+                const userData = { nama, email, kota };
+                
+                // 1. KIRIM DATA KE FIREBASE (Dipanggil ASYNC tanpa di-await)
+                // Ini akan mulai mengirim log di latar belakang.
+                sendLoginDataToFirebase(userData);
+                
+                // 2. SIMPAN KE LOCALSTORAGE & REDIRECT SEGERA
+                localStorage.setItem('currentUser', JSON.stringify(userData));
+                window.location.href = 'menu.html';
+            });
         });
     </script>
 </body>

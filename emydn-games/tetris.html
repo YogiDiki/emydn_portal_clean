@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tetris - Emydn EduGames</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
+      color: #333;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+    .game-container {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 500px;
+      width: 100%;
+    }
+    h1 {
+      font-size: 2em;
+      margin-bottom: 15px;
+      color: #8B0000;
+      text-align: center;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+    .score-level {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+      font-size: 1.1em;
+      font-weight: bold;
+      color: #555;
+    }
+    .score-box {
+      background: linear-gradient(135deg, #8B0000, #DC143C);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(139, 0, 0, 0.3);
+      transition: transform 0.3s;
+    }
+    .score-box.pulse {
+      animation: pulse 0.5s;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+    canvas {
+      background: #f5f5f5;
+      border: 4px solid #8B0000;
+      border-radius: 10px;
+      display: block;
+      margin: 0 auto 20px;
+      touch-action: none;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      position: relative;
+    }
+    .canvas-wrapper {
+      position: relative;
+      display: inline-block;
+      margin: 0 auto 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .line-clear-effect {
+      position: absolute;
+      width: 100%;
+      height: 30px;
+      background: rgba(255, 215, 0, 0.8);
+      pointer-events: none;
+      animation: lineClear 0.5s;
+      border-radius: 5px;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    }
+    @keyframes lineClear {
+      0% { opacity: 1; transform: scaleX(1); }
+      100% { opacity: 0; transform: scaleX(0); }
+    }
+    .speed-notification {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      color: #8B0000;
+      padding: 30px 50px;
+      border-radius: 15px;
+      font-size: 1.8em;
+      font-weight: bold;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      z-index: 1000;
+      animation: speedUp 1s ease-out;
+      pointer-events: none;
+    }
+    @keyframes speedUp {
+      0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+      50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+    }
+    .controls {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+      border: 2px solid #e0e0e0;
+    }
+    .controls h3 {
+      color: #8B0000;
+      margin-bottom: 15px;
+      text-align: center;
+      font-size: 1.2em;
+    }
+    .control-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+    .control-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      background: white;
+      border-radius: 8px;
+      border: 2px solid #e0e0e0;
+    }
+    .control-icon {
+      font-size: 1.5em;
+      color: #8B0000;
+    }
+    .control-text {
+      font-size: 0.9em;
+      color: #666;
+    }
+    .control-text strong {
+      display: block;
+      color: #333;
+      margin-bottom: 3px;
+    }
+    .menu-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #8B0000, #DC143C);
+      color: white;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 5px 15px rgba(139, 0, 0, 0.3);
+    }
+    .menu-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(139, 0, 0, 0.4);
+    }
+    
+    .game-over-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+    .game-over-content {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      animation: gameOverAppear 0.5s ease-out;
+    }
+    @keyframes gameOverAppear {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .game-over-icon {
+      font-size: 5em;
+      margin-bottom: 20px;
+      animation: rotateIcon 1s ease-in-out;
+    }
+    @keyframes rotateIcon {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-10deg); }
+      75% { transform: rotate(10deg); }
+    }
+    .game-over-title {
+      font-size: 2.5em;
+      color: #8B0000;
+      margin-bottom: 20px;
+    }
+    .game-over-stats {
+      background: #f8f8f8;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    .game-over-stats p {
+      font-size: 1.2em;
+      margin: 10px 0;
+      color: #333;
+    }
+    .game-over-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .game-over-btn {
+      padding: 12px 24px;
+      background: #8B0000;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .game-over-btn:hover {
+      background: #DC143C;
+      transform: translateY(-2px);
+    }
+    
+    @media (max-width: 768px) {
+      .game-container {
+        padding: 20px;
+      }
+      h1 {
+        font-size: 1.5em;
+      }
+      canvas {
+        max-width: 100%;
+        height: auto;
+      }
+      .control-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .score-level {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .score-box {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <h1>🎮 Emydn Tetris</h1>
+    
+    <div class="score-level">
+      <div class="score-box" id="scoreBox">
+        🎯 Skor: <span id="score">0</span>
+      </div>
+      <div class="score-box" id="speedBox">
+        ⚡ Kecepatan: <span id="speed">1.0x</span>
+      </div>
+    </div>
+    
+    <div class="canvas-wrapper">
+      <canvas id="tetris"></canvas>
+    </div>
+    
+    <div class="controls">
+      <h3>📱 Kontrol Permainan</h3>
+      <div class="control-grid">
+        <div class="control-item">
+          <div class="control-icon">💻</div>
+          <div class="control-text">
+            <strong>PC/Laptop</strong>
+            ← → Gerak kiri/kanan<br>
+            ↓ Percepat jatuh<br>
+            ↑ Putar blok
+          </div>
+        </div>
+        <div class="control-item">
+          <div class="control-icon">📱</div>
+          <div class="control-text">
+            <strong>Mobile</strong>
+            Swipe kiri/kanan<br>
+            Swipe bawah untuk percepat<br>
+            Tap untuk putar
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <button class="menu-btn" onclick="window.location.href='menu.html'">← Kembali ke Menu</button>
+  </div>
+
+  <div class="game-over-modal" id="gameOverModal">
+    <div class="game-over-content">
+      <div class="game-over-icon">🎮</div>
+      <h2 class="game-over-title">Game Over!</h2>
+      <div class="game-over-stats">
+        <p>🏆 Skor Akhir: <strong id="finalScore">0</strong></p>
+        <p>⚡ Kecepatan Tertinggi: <strong id="finalSpeed">1.0x</strong></p>
+        <p style="font-size: 0.9em; color: #008000; margin-top: 15px;">✅ Skor telah tersimpan di leaderboard!</p>
+      </div>
+      <div class="game-over-buttons">
+        <button class="game-over-btn" onclick="location.reload()">🔄 Main Lagi</button>
+        <button class="game-over-btn" onclick="window.location.href='leaderboard.html'">🏆 Leaderboard</button>
+        <button class="game-over-btn" onclick="window.location.href='menu.html'">🎮 Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    // ====== 1. IMPORT FIREBASE CONFIG ======
+    import { db, ref, push } from './firebaseConfig.js';
+
+    const GAME_PATH = 'tetris';
+
+    // ====== 2. CEK LOGIN USER ======
+    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) {
+      alert('Silakan login terlebih dahulu!');
+      window.location.href = 'index.html';
+    }
+
+    // ====== 3. SETUP CANVAS & RESPONSIF ======
+    const canvas = document.getElementById('tetris');
+    const ctx = canvas.getContext('2d');
+    
+    function setCanvasSize() {
+      const isMobile = window.innerWidth <= 768;
+      const BLOCK = isMobile ? 20 : 30;
+      const COLS = 10;
+      const ROWS = 20;
+      
+      canvas.width = COLS * BLOCK;
+      canvas.height = ROWS * BLOCK;
+      
+      return { BLOCK, COLS, ROWS };
+    }
+    
+    let { BLOCK, COLS, ROWS } = setCanvasSize();
+    
+    window.addEventListener('resize', () => {
+      const sizes = setCanvasSize();
+      BLOCK = sizes.BLOCK;
+      COLS = sizes.COLS;
+      ROWS = sizes.ROWS;
+      draw();
+    });
+
+    // ====== 4. AUDIO CONTEXT ======
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const audioCtx = new AudioContext();
+
+    function playSound(frequency, duration, type = 'sine') {
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      oscillator.frequency.value = frequency;
+      oscillator.type = type;
+      
+      gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+      
+      oscillator.start(audioCtx.currentTime);
+      oscillator.stop(audioCtx.currentTime + duration);
+    }
+
+    function playClearSound(lines) {
+      const frequencies = [523.25, 587.33, 659.25, 783.99];
+      frequencies.slice(0, lines).forEach((freq, i) => {
+        setTimeout(() => playSound(freq, 0.15, 'square'), i * 50);
+      });
+    }
+
+    // ====== 5. LOGIKA GAME ======
+    const board = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+
+    const colors = [
+      '#f5f5f5',  // 0 - Background
+      '#FF0000',  // 1 - Merah terang
+      '#00FF00',  // 2 - Hijau terang
+      '#0000FF',  // 3 - Biru terang
+      '#FFFF00',  // 4 - Kuning terang
+      '#FF00FF',  // 5 - Magenta
+      '#00FFFF',  // 6 - Cyan
+      '#FFA500'   // 7 - Orange
+    ];
+
+    const pieces = [
+      { shape: [[1,1,1,1]], color: 1 },
+      { shape: [[1,1],[1,1]], color: 2 },
+      { shape: [[0,1,0],[1,1,1]], color: 3 },
+      { shape: [[1,0,0],[1,1,1]], color: 4 },
+      { shape: [[0,0,1],[1,1,1]], color: 5 },
+      { shape: [[1,1,0],[0,1,1]], color: 6 },
+      { shape: [[0,1,1],[1,1,0]], color: 7 }
+    ];
+
+    let piece, pos = {x: 3, y: 0}, score = 0, speedMultiplier = 1.0, baseDropInterval = 800, dropInterval = 800, lastDrop = 0;
+    let gameRunning = true; // FLAG UNTUK MENCEGAH DUPLICATE
+    let scoreSubmitted = false; // FLAG UNTUK MENCEGAH PENGIRIMAN GANDA
+
+    function randomPiece() {
+      const p = pieces[Math.floor(Math.random() * pieces.length)];
+      return {
+        shape: p.shape.map(r => [...r]),
+        color: p.color
+      };
+    }
+
+    piece = randomPiece();
+
+    function drawSquare(x, y, colorIndex) {
+      ctx.fillStyle = colors[colorIndex];
+      ctx.fillRect(x * BLOCK, y * BLOCK, BLOCK, BLOCK);
+      
+      if (colorIndex > 0) {
+        ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x * BLOCK, y * BLOCK, BLOCK, BLOCK);
+        
+        ctx.fillStyle = 'rgba(255,255,255,0.4)';
+        ctx.fillRect(x * BLOCK + 2, y * BLOCK + 2, BLOCK - 4, BLOCK/3);
+      }
+    }
+
+    function drawBoard() {
+      board.forEach((r, y) => r.forEach((c, x) => drawSquare(x, y, c)));
+    }
+
+    function drawPiece() {
+      piece.shape.forEach((r, y) => r.forEach((c, x) => {
+        if (c) drawSquare(pos.x + x, pos.y + y, piece.color);
+      }));
+    }
+
+    function validMove(dx, dy, rot) {
+      const p = rot ? rotate(piece.shape) : piece.shape;
+      for (let y = 0; y < p.length; y++) {
+        for (let x = 0; x < p[y].length; x++) {
+          if (p[y][x]) {
+            let nx = pos.x + x + dx;
+            let ny = pos.y + y + dy;
+            if (nx < 0 || nx >= COLS || ny >= ROWS || (ny >= 0 && board[ny][nx])) return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    function merge() {
+      piece.shape.forEach((r, y) => r.forEach((c, x) => {
+        if (c && pos.y + y >= 0) board[pos.y + y][pos.x + x] = piece.color;
+      }));
+    }
+
+    function rotate(p) {
+      return p[0].map((_, i) => p.map(row => row[i])).reverse();
+    }
+
+    function showLineEffect(rowIndex) {
+      const effect = document.createElement('div');
+      effect.className = 'line-clear-effect';
+      effect.style.top = (rowIndex * BLOCK) + 'px';
+      effect.style.left = '0';
+      canvas.parentElement.appendChild(effect);
+      setTimeout(() => effect.remove(), 500);
+    }
+
+    function showSpeedNotification() {
+      const notification = document.createElement('div');
+      notification.className = 'speed-notification';
+      notification.textContent = `⚡ Kecepatan Naik! ${speedMultiplier.toFixed(1)}x`;
+      document.body.appendChild(notification);
+      setTimeout(() => notification.remove(), 1000);
+    }
+
+    function clearLines() {
+      let cleared = 0;
+      const clearedRows = [];
+      
+      for (let y = ROWS - 1; y >= 0; y--) {
+        if (board[y].every(v => v)) {
+          clearedRows.push(y);
+          board.splice(y, 1);
+          board.unshift(Array(COLS).fill(0));
+          cleared++;
+          y++;
+        }
+      }
+      
+      if (cleared) {
+        clearedRows.forEach(row => showLineEffect(row));
+        playClearSound(cleared);
+        
+        score += cleared * 100;
+        document.getElementById('score').textContent = score;
+        document.getElementById('scoreBox').classList.add('pulse');
+        setTimeout(() => document.getElementById('scoreBox').classList.remove('pulse'), 500);
+        
+        const newSpeed = 1.0 + Math.floor(score / 500) * 0.2;
+        if (newSpeed > speedMultiplier) {
+          speedMultiplier = newSpeed;
+          dropInterval = Math.max(100, baseDropInterval / speedMultiplier);
+          document.getElementById('speed').textContent = speedMultiplier.toFixed(1) + 'x';
+          document.getElementById('speedBox').classList.add('pulse');
+          setTimeout(() => document.getElementById('speedBox').classList.remove('pulse'), 500);
+          showSpeedNotification();
+          playSound(880, 0.3, 'sine');
+        }
+      }
+    }
+
+    function drop() {
+      if (!gameRunning) return; // STOP JIKA GAME SUDAH BERAKHIR
+      
+      if (validMove(0, 1)) pos.y++;
+      else {
+        merge();
+        clearLines();
+        piece = randomPiece();
+        pos = {x: 3, y: 0};
+        if (!validMove(0, 0)) {
+          gameOver();
+        }
+      }
+      draw();
+    }
+
+    function draw() {
+      if (!gameRunning) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawBoard();
+      drawPiece();
+    }
+
+    function update(time = 0) {
+      if (!gameRunning) return; // STOP ANIMATION LOOP
+      
+      if (time - lastDrop > dropInterval) {
+        drop();
+        lastDrop = time;
+      }
+      draw();
+      requestAnimationFrame(update);
+    }
+
+    // ===== KONTROL KEYBOARD =====
+    document.addEventListener('keydown', e => {
+      if (!gameRunning) return;
+      
+      if(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        e.preventDefault();
+      }
+      
+      if (e.key === 'ArrowLeft' && validMove(-1, 0)) {
+        pos.x--;
+        playSound(200, 0.05);
+      }
+      else if (e.key === 'ArrowRight' && validMove(1, 0)) {
+        pos.x++;
+        playSound(200, 0.05);
+      }
+      else if (e.key === 'ArrowDown') {
+        drop();
+        playSound(150, 0.05);
+      }
+      else if (e.key === 'ArrowUp' && validMove(0, 0, true)) {
+        piece.shape = rotate(piece.shape);
+        playSound(300, 0.05);
+      }
+      draw();
+    });
+
+    // ===== KONTROL TOUCH =====
+    let startX = 0, startY = 0;
+    canvas.addEventListener('touchstart', e => {
+      if (!gameRunning) return;
+      e.preventDefault();
+      const t = e.touches[0];
+      startX = t.clientX;
+      startY = t.clientY;
+    });
+
+    canvas.addEventListener('touchend', e => {
+      if (!gameRunning) return;
+      e.preventDefault();
+      const t = e.changedTouches[0];
+      let dx = t.clientX - startX;
+      let dy = t.clientY - startY;
+      
+      if (Math.abs(dx) < 20 && Math.abs(dy) < 20) {
+        if (validMove(0, 0, true)) {
+          piece.shape = rotate(piece.shape);
+          playSound(300, 0.05);
+        }
+      } else if (Math.abs(dx) > Math.abs(dy)) {
+        if (dx > 30 && validMove(1, 0)) {
+          pos.x++;
+          playSound(200, 0.05);
+        }
+        else if (dx < -30 && validMove(-1, 0)) {
+          pos.x--;
+          playSound(200, 0.05);
+        }
+      } else {
+        if (dy > 30) {
+          drop();
+          playSound(150, 0.05);
+        }
+      }
+      draw();
+    });
+
+    update();
+
+    // ===== KIRIM SKOR KE FIREBASE (HANYA SEKALI) =====
+    function sendScoreToFirebase(finalScore) {
+      if (scoreSubmitted) return; // JANGAN KIRIM LAGI JIKA SUDAH DIKIRIM
+      scoreSubmitted = true;
+
+      const scoreData = {
+        nama: currentUser.nama,
+        kota: currentUser.kota,
+        skor: finalScore,
+        timestamp: Date.now()
+      };
+
+      const leaderboardRef = ref(db, `leaderboard/${GAME_PATH}`);
+      push(leaderboardRef, scoreData)
+        .then(() => console.log('✅ Skor Tetris berhasil dikirim ke Firebase!'))
+        .catch(err => console.error('❌ Gagal kirim skor Tetris:', err));
+    }
+
+    function gameOver() {
+      if (!gameRunning) return; // JANGAN PANGGIL LAGI JIKA SUDAH GAME OVER
+      
+      gameRunning = false; // SET FLAG BAHWA GAME SUDAH BERAKHIR
+      
+      sendScoreToFirebase(score);
+      
+      document.getElementById('finalScore').textContent = score;
+      document.getElementById('finalSpeed').textContent = speedMultiplier.toFixed(1) + 'x';
+      document.getElementById('gameOverModal').style.display = 'flex';
+    }
+  </script>
+</body>
+</html>

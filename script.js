@@ -22,7 +22,6 @@ window.addEventListener('scroll', () => {
 // Smooth Scrolling & Close Mobile Menu on Click
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
-        // Hanya jalankan untuk tautan yang berada di halaman ini (dimulai dengan #)
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {

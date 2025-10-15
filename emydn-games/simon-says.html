@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ikuti Pola - Emydn EduGames</title>
+    <style>
+        /* ================================================= */
+        /* STYLES DARI SUSUN-HURUF.HTML        */
+        /* ================================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #8B0000, #DC143C);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .score-info {
+            color: #8B0000;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .back-btn {
+            padding: 10px 20px;
+            background: #8B0000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .game-area {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        .game-title {
+            color: #8B0000;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .hint {
+            color: #666;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        .result-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        .modal-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+        .modal-title {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #8B0000;
+        }
+        .modal-text {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+        .modal-btn {
+            padding: 12px 30px;
+            background: #8B0000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .final-score {
+            background: #f8f8f8;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .final-score h3 {
+            color: #8B0000;
+            margin-bottom: 10px;
+        }
+        /* ================================================= */
+        /* END OF STYLES DARI SUSUN-HURUF.HTML          */
+        /* ================================================= */
+
+        /* STYLE KHUSUS GAME INI */
+        #simonBoard {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 90%;
+            max-width: 400px;
+            height: 400px;
+            margin: 30px auto;
+        }
+        .simon-btn {
+            height: 100%;
+            width: 100%;
+            border: 5px solid #333;
+            opacity: 0.5; 
+            cursor: pointer;
+            transition: opacity 0.1s, transform 0.1s;
+        }
+        .simon-btn.active {
+            opacity: 1; /* Menyala */
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.8);
+            transform: scale(1.02);
+        }
+        .simon-btn:active:not(.disabled) {
+            transform: scale(0.98);
+        }
+        .simon-btn.disabled {
+            pointer-events: none; /* Nonaktifkan klik saat pola dimainkan */
+        }
+        #btnRed { background-color: #D90000; border-radius: 10px 0 0 0; }
+        #btnGreen { background-color: #00A300; border-radius: 0 10px 0 0; }
+        #btnYellow { background-color: #E6E600; border-radius: 0 0 0 10px; }
+        #btnBlue { background-color: #0000D9; border-radius: 0 0 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="score-info">
+                🎯 Skor: <span id="score">0</span>
+            </div>
+            <a href="menu.html" class="back-btn">← Kembali</a>
+        </div>
+
+        <div class="game-area">
+            <h1 class="game-title">💡 Ikuti Pola</h1>
+            
+            <p class="hint">Perhatikan urutan cahaya, lalu ulangi!</p>
+
+            <div id="simonBoard">
+                <button id="btnRed" class="simon-btn disabled" data-color="Red"></button>
+                <button id="btnGreen" class="simon-btn disabled" data-color="Green"></button>
+                <button id="btnYellow" class="simon-btn disabled" data-color="Yellow"></button>
+                <button id="btnBlue" class="simon-btn disabled" data-color="Blue"></button>
+            </div>
+
+            <p style="font-size: 1.5em; margin-top: 20px;">
+                <span id="instructionText">Tekan Mulai untuk bermain</span>
+            </p>
+            <button class="modal-btn" id="startButton">Mulai Game</button> 
+        </div>
+    </div>
+
+    <div class="result-modal" id="resultModal" style="z-index: 1001;">
+        <div class="modal-content">
+            <div class="modal-icon" id="modalIcon">✅</div>
+            <h2 class="modal-title" id="modalTitle">Lanjut!</h2>
+            <p class="modal-text" id="modalText">Level <span id="currentLevel">1</span> Selesai!</p>
+            <button class="modal-btn" id="nextLevelBtn">Level Berikutnya</button>
+        </div>
+    </div>
+
+    <div class="result-modal" id="finalModal">
+        <div class="modal-content">
+            <div class="modal-icon">💔</div>
+            <h2 class="modal-title">Game Over!</h2>
+            <div class="final-score">
+                <h3>Level Terakhir</h3>
+                <p style="font-size: 2em; color: #8B0000; font-weight: bold;"><span id="finalLevel">0</span></p>
+                <h3>Skor Akhir</h3>
+                <p style="font-size: 2em; color: #8B0000; font-weight: bold;"><span id="finalScore">0</span></p>
+            </div>
+            <button class="modal-btn" id="playAgainBtn">Main Lagi</button>
+            <button class="modal-btn" id="goToMenuBtn">Pilih Game Lain</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { db, ref, push } from './firebaseConfig.js'; 
+        
+        const GAME_PATH = 'ikuti-pola';
+        const SIMON_COLORS = ['Red', 'Green', 'Yellow', 'Blue'];
+
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser) {
+            window.location.href = 'index.html';
+        }
+
+        let pattern = [];
+        let playerSequence = [];
+        let gameLevel = 0;
+        let score = 0;
+        let canClick = false;
+
+        const instructionText = document.getElementById('instructionText');
+        const scoreDisplay = document.getElementById('score');
+        const startButton = document.getElementById('startButton');
+        const simonButtons = document.querySelectorAll('.simon-btn');
+
+        function startSimonGame() {
+            startButton.style.display = 'none';
+            score = 0;
+            gameLevel = 0;
+            pattern = [];
+            scoreDisplay.textContent = score;
+            nextSimonLevel();
+        }
+
+        function nextSimonLevel() {
+            document.getElementById('resultModal').style.display = 'none';
+            playerSequence = [];
+            canClick = false;
+            gameLevel++;
+            instructionText.textContent = `Level ${gameLevel}: Perhatikan Pola!`;
+
+            // Tambahkan warna baru ke pola
+            const newColorIndex = Math.floor(Math.random() * SIMON_COLORS.length);
+            pattern.push(SIMON_COLORS[newColorIndex]);
+
+            // Tampilkan pola
+            setTimeout(() => {
+                playPattern(pattern);
+            }, 1000); 
+        }
+
+        function playPattern(currentPattern) {
+            // Nonaktifkan tombol saat pola dimainkan
+            simonButtons.forEach(btn => btn.classList.add('disabled'));
+            
+            let i = 0;
+            const interval = setInterval(() => {
+                flashColor(currentPattern[i]);
+                i++;
+                if (i >= currentPattern.length) {
+                    clearInterval(interval);
+                    canClick = true; 
+                    instructionText.textContent = `Giliranmu! Ulangi ${gameLevel} langkah!`;
+                    // Aktifkan tombol
+                    simonButtons.forEach(btn => btn.classList.remove('disabled'));
+                }
+            }, 800); // Waktu antara kilatan
+        }
+
+        function flashColor(color) {
+            const btn = document.getElementById('btn' + color);
+            // Tambahkan class 'active'
+            btn.classList.add('active');
+            setTimeout(() => {
+                // Hapus class 'active'
+                btn.classList.remove('active');
+            }, 400); // Durasi kilatan
+        }
+
+        function handlePlayerClick(color) {
+            if (!canClick) return; 
+
+            flashColor(color);
+            playerSequence.push(color);
+
+            const currentIndex = playerSequence.length - 1;
+
+            // 1. Cek apakah klik saat ini salah
+            if (playerSequence[currentIndex] !== pattern[currentIndex]) {
+                canClick = false;
+                simonButtons.forEach(btn => btn.classList.add('disabled'));
+                endGame(false); // Game Over!
+                return;
+            }
+
+            // 2. Cek apakah pemain sudah menyelesaikan pola
+            if (playerSequence.length === pattern.length) {
+                canClick = false;
+                simonButtons.forEach(btn => btn.classList.add('disabled'));
+                
+                // Beri skor (misalnya 100 poin per level)
+                score += gameLevel * 100; 
+                scoreDisplay.textContent = score;
+
+                // Tampilkan modal Lanjut Level
+                document.getElementById('currentLevel').textContent = gameLevel;
+                document.getElementById('resultModal').style.display = 'flex';
+            }
+        }
+
+        // Event listener untuk tombol-tombol simon (sudah benar)
+        document.getElementById('simonBoard').addEventListener('click', (e) => {
+            if (e.target.classList.contains('simon-btn')) {
+                const colorName = e.target.dataset.color;
+                handlePlayerClick(colorName);
+            }
+        });
+
+        // FUNGSI FIREBASE & AKHIR GAME
+        function sendScoreToFirebase(finalScore, finalLevel) {
+            const scoreData = {
+                nama: currentUser.nama,
+                kota: currentUser.kota, 
+                skor: finalScore, 
+                level: finalLevel, // Simpan level tertinggi
+                timestamp: Date.now()
+            };
+            const leaderboardRef = ref(db, `leaderboard/${GAME_PATH}`);
+            push(leaderboardRef, scoreData)
+                .then(() => console.log('Skor Simon Says berhasil dikirim ke Firebase!'))
+                .catch((error) => console.error('Gagal mengirim skor:', error));
+        }
+
+        function endGame() {
+            // Skor yang dikirim adalah skor yang didapat dari level terakhir yang berhasil dilewati
+            sendScoreToFirebase(score, gameLevel - 1); 
+            
+            document.getElementById('finalLevel').textContent = gameLevel - 1; // Level yang berhasil diselesaikan
+            document.getElementById('finalScore').textContent = score;
+            
+            document.getElementById('finalModal').style.display = 'flex';
+        }
+
+        function playAgain() {
+            location.reload();
+        }
+
+        function goToMenu() {
+            window.location.href = 'menu.html';
+        }
+
+        // ==========================================================
+        // PERBAIKAN UTAMA: MENGGUNAKAN EVENT LISTENER UNTUK MODAL & MULAI
+        // ==========================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Hubungkan tombol Mulai
+            document.getElementById('startButton').addEventListener('click', startSimonGame);
+
+            // Hubungkan tombol Lanjut Level
+            document.getElementById('nextLevelBtn').addEventListener('click', nextSimonLevel);
+
+            // Hubungkan tombol modal akhir
+            document.getElementById('playAgainBtn').addEventListener('click', playAgain);
+            document.getElementById('goToMenuBtn').addEventListener('click', goToMenu);
+        });
+    </script>
+</body>
+</html>

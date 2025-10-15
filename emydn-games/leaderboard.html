@@ -3,27 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Papan Peringkat EMYDN: lihat peringkat pemain terbaik untuk Tebak Kata, Susun Huruf, dan Tebak Lokasi.">
-    <meta name="robots" content="index, follow">
-    <meta name="keywords" content="leaderboard, papan peringkat, peringkat game, skor terbaik, EMYDN games">
-    <link rel="canonical" href="https://www.emydngroup.my.id/emydn-games/leaderboard.html">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Leaderboard - EMYDN EduGames">
-    <meta property="og:description" content="Lihat pemain terbaik EMYDN EduGames.">
-    <meta property="og:url" content="https://www.emydngroup.my.id/emydn-games/leaderboard.html">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&q=80">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Leaderboard - EMYDN EduGames">
-    <meta name="twitter:description" content="Lihat pemain terbaik EMYDN EduGames.">
-    <meta name="twitter:image" content="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&q=80">
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      "name": "Leaderboard EMYDN",
-      "url": "https://www.emydngroup.my.id/emydn-games/leaderboard.html"
-    }
-    </script>
     <title>Leaderboard - Emydn EduGames</title>
     <style>
         * {
@@ -95,6 +74,8 @@
             cursor: pointer;
             transition: all 0.3s;
             color: #333;
+            flex-grow: 1;
+            min-width: 120px;
         }
         .filter-btn:hover {
             background: #e0e0e0;
@@ -145,11 +126,12 @@
         .game-badge {
             display: inline-block;
             padding: 5px 10px;
-            background: #f0f0f0;
             border-radius: 5px;
             font-size: 0.9em;
             color: #666;
+            font-weight: bold;
         }
+        /* Style Lama */
         .game-badge.tebak-kata {
             background: #FFE5E5;
             color: #8B0000;
@@ -161,6 +143,26 @@
         .game-badge.tebak-lokasi {
             background: #E5FFE5;
             color: #006600;
+        }
+        /* Style BARU: Permainan Warna (Color Game) */
+        .game-badge.permainan-warna {
+            background: #FFF5E5;
+            color: #FFA500;
+        }
+        /* Style BARU: Ikuti Pola (Simon Game) */
+        .game-badge.ikuti-pola {
+            background: #F0E5FF;
+            color: #800080;
+        }
+        /* Style BARU: Emydn Match */
+        .game-badge.emydn-match {
+            background: #E5F5FF;
+            color: #00008B;
+        }
+        /* Style BARU: Tetris */
+        .game-badge.tetris {
+            background: #FFE5E5;
+            color: #DC143C;
         }
         .empty-state {
             text-align: center;
@@ -177,6 +179,13 @@
             font-size: 1.1em;
         }
         @media (max-width: 768px) {
+            .filter-buttons {
+                justify-content: space-around;
+            }
+            .filter-btn {
+                min-width: unset;
+                flex-grow: 0;
+            }
             .leaderboard-table {
                 font-size: 0.9em;
             }
@@ -200,57 +209,91 @@
 
         <div class="leaderboard-card">
             <div class="filter-buttons">
-                <button class="filter-btn active" onclick="filterGame('all')">🎮 Semua Game</button>
-                <button class="filter-btn" onclick="filterGame('Tebak Kata')">🧠 Tebak Kata</button>
-                <button class="filter-btn" onclick="filterGame('Susun Huruf')">🧩 Susun Huruf</button>
-                <button class="filter-btn" onclick="filterGame('Tebak Lokasi')">🌍 Tebak Lokasi</button>
+                <button class="filter-btn active" data-game="all">🎮 Semua Game</button>
+                <button class="filter-btn" data-game="tetris">🧱 Tetris</button>
+                <button class="filter-btn" data-game="emydn-match">🃏 Emydn Match</button>
+                <button class="filter-btn" data-game="permainan-warna">🎨 Permainan Warna</button>
+                <button class="filter-btn" data-game="ikuti-pola">💡 Ikuti Pola</button>
+                <button class="filter-btn" data-game="tebak-kata">🧠 Tebak Kata</button>
+                <button class="filter-btn" data-game="susun-huruf">🧩 Susun Huruf</button>
+                <button class="filter-btn" data-game="tebak-lokasi">🌍 Tebak Lokasi</button>
             </div>
 
             <div class="leaderboard-table" id="leaderboardTable">
-                <!-- Table will be loaded here -->
+                <div class="empty-state">Memuat data leaderboard...</div>
             </div>
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        // 1. IMPORT FUNGSI FIREBASE
+        import { db, ref, onValue } from './firebaseConfig.js'; 
+
+        // 2. KONSTANTA
+        const PATH_LEADERBOARD = 'leaderboard';
+        const TABLE_CONTAINER = document.getElementById('leaderboardTable');
+        const FILTER_BUTTONS = document.querySelectorAll('.filter-btn');
+
         let allData = [];
         let currentFilter = 'all';
 
-        function loadLeaderboard() {
-            const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+        // 3. FUNGSI UTAMA UNTUK MENGAMBIL DATA DARI FIREBASE
+        function loadLeaderboardFromFirebase() {
+            const allSkorRef = ref(db, PATH_LEADERBOARD); 
             
-            if (leaderboard.length === 0) {
-                displayEmptyState();
-                return;
+            onValue(allSkorRef, (snapshot) => {
+                const fetchedData = [];
+                snapshot.forEach(gameSnapshot => {
+                    const gameNameKey = gameSnapshot.key; 
+                    const gameNameDisplay = formatGameName(gameNameKey);
+
+                    gameSnapshot.forEach(skorSnapshot => {
+                        const skorData = skorSnapshot.val();
+                        
+                        // Tambahkan properti 'game' dan 'gameKey'
+                        fetchedData.push({
+                            ...skorData,
+                            id: skorSnapshot.key,
+                            game: gameNameDisplay,
+                            gameKey: gameNameKey
+                        });
+                    });
+                });
+                
+                // Sortir semua data: skor tertinggi, jika skor sama, yang terbaru (timestamp tertinggi) di atas
+                allData = fetchedData.sort((a, b) => {
+                    if (b.skor !== a.skor) {
+                        return b.skor - a.skor;
+                    }
+                    return b.timestamp - a.timestamp; 
+                });
+                
+                // Tampilkan data dengan filter saat ini
+                filterAndDisplay(currentFilter);
+
+            }, {
+                onlyOnce: false 
+            }); 
+        }
+
+        // 4. FUNGSI UNTUK MEMBANTU FORMAT NAMA GAME
+        function formatGameName(key) {
+            // Mengubah 'permainan-warna' atau 'emydn-match' menjadi 'Permainan Warna' atau 'Emydn Match'
+            return key.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        }
+
+        // 5. FUNGSI FILTER DAN DISPLAY 
+        function filterAndDisplay(gameType) {
+            currentFilter = gameType;
+
+            let filteredData = allData;
+            
+            if (gameType !== 'all') {
+                filteredData = allData.filter(player => player.gameKey === gameType); 
             }
-
-            // Sort by score (descending)
-            allData = leaderboard.sort((a, b) => b.score - a.score);
-            displayLeaderboard(allData);
-        }
-
-        function displayEmptyState() {
-            const container = document.getElementById('leaderboardTable');
-            container.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-state-icon">📊</div>
-                    <h2>Belum Ada Data</h2>
-                    <p>Leaderboard masih kosong. Mainkan game untuk masuk ke peringkat!</p>
-                </div>
-            `;
-        }
-
-        function displayLeaderboard(data) {
-            const container = document.getElementById('leaderboardTable');
             
-            if (data.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">🔍</div>
-                        <h2>Tidak Ada Data</h2>
-                        <p>Belum ada pemain untuk filter ini.</p>
-                    </div>
-                `;
+            if (filteredData.length === 0) {
+                displayEmptyState(gameType !== 'all');
                 return;
             }
 
@@ -268,30 +311,27 @@
                     <tbody>
             `;
 
-            data.forEach((player, index) => {
+            filteredData.forEach((player, index) => {
                 const rank = index + 1;
                 let rankClass = 'rank';
                 if (rank === 1) rankClass += ' rank-1';
                 else if (rank === 2) rankClass += ' rank-2';
                 else if (rank === 3) rankClass += ' rank-3';
 
-                let gameClass = '';
-                if (player.game === 'Tebak Kata') gameClass = 'tebak-kata';
-                else if (player.game === 'Susun Huruf') gameClass = 'susun-huruf';
-                else if (player.game === 'Tebak Lokasi') gameClass = 'tebak-lokasi';
-
                 let rankIcon = '';
                 if (rank === 1) rankIcon = '🥇';
                 else if (rank === 2) rankIcon = '🥈';
                 else if (rank === 3) rankIcon = '🥉';
-
+                
+                const gameClass = player.gameKey; 
+                
                 tableHTML += `
                     <tr>
                         <td><span class="${rankClass}">${rankIcon} ${rank}</span></td>
                         <td><strong>${player.nama}</strong></td>
                         <td>📍 ${player.kota}</td>
                         <td><span class="game-badge ${gameClass}">${player.game}</span></td>
-                        <td><span class="score-highlight">${player.score}</span></td>
+                        <td><span class="score-highlight">${player.skor}</span></td>
                     </tr>
                 `;
             });
@@ -301,29 +341,38 @@
                 </table>
             `;
 
-            container.innerHTML = tableHTML;
+            TABLE_CONTAINER.innerHTML = tableHTML;
         }
 
-        function filterGame(gameType) {
-            currentFilter = gameType;
-            
-            // Update active button
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
+        // 6. FUNGSI MENAMPILKAN EMPTY STATE
+        function displayEmptyState(isFiltered) {
+            const gameName = formatGameName(currentFilter);
+            TABLE_CONTAINER.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">${isFiltered ? '🔍' : '📊'}</div>
+                    <h2>${isFiltered ? 'Tidak Ada Data' : 'Belum Ada Data'}</h2>
+                    <p>${isFiltered ? `Belum ada skor yang tercatat untuk **${gameName}**.` : 'Leaderboard masih kosong. Mainkan game untuk masuk ke peringkat!'}</p>
+                </div>
+            `;
+        }
+
+        // 7. EVENT LISTENER UNTUK TOMBOL FILTER
+        FILTER_BUTTONS.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                // Hapus class 'active' dari semua tombol
+                FILTER_BUTTONS.forEach(b => b.classList.remove('active'));
+                
+                // Tambahkan class 'active' ke tombol yang diklik
+                e.target.classList.add('active');
+
+                // Panggil filter dan display
+                const gameType = e.target.getAttribute('data-game');
+                filterAndDisplay(gameType);
             });
-            event.target.classList.add('active');
+        });
 
-            // Filter data
-            let filteredData = allData;
-            if (gameType !== 'all') {
-                filteredData = allData.filter(player => player.game === gameType);
-            }
-
-            displayLeaderboard(filteredData);
-        }
-
-        // Load leaderboard on page load
-        loadLeaderboard();
+        // 8. JALANKAN SAAT HALAMAN DIMUAT
+        loadLeaderboardFromFirebase();
     </script>
 </body>
 </html>

@@ -3,29 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Pilih game edukasi EMYDN: Tebak Kata, Susun Huruf, dan Tebak Lokasi. Asah otak sambil bermain.">
-    <meta name="robots" content="index, follow">
-    <meta name="keywords" content="menu game, EMYDN Games, game edukasi anak, tebak kata, susun huruf, tebak lokasi, permainan edukasi, game pendidikan online gratis">
-    <link rel="canonical" href="https://www.emydngroup.my.id/emydn-games/menu.html">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Menu Game - EMYDN EduGames">
-    <meta property="og:description" content="Pilih dan mainkan game edukasi: Tebak Kata, Susun Huruf, Tebak Lokasi.">
-    <meta property="og:url" content="https://www.emydngroup.my.id/emydn-games/menu.html">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&q=80">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Menu Game - EMYDN EduGames">
-    <meta name="twitter:description" content="Pilih dan mainkan game edukasi: Tebak Kata, Susun Huruf, Tebak Lokasi.">
-    <meta name="twitter:image" content="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&q=80">
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      "name": "Menu Game EMYDN",
-      "url": "https://www.emydngroup.my.id/emydn-games/menu.html"
-    }
-    </script>
     <title>Menu - Emydn EduGames</title>
     <style>
+        /* [CSS LAMA ANDA DI SINI, TIDAK ADA PERUBAHAN] */
         * {
             margin: 0;
             padding: 0;
@@ -168,6 +148,27 @@
         </div>
 
         <div class="games-grid">
+            <div class="game-card" onclick="playGame('emydn-match.html')">
+                <div class="game-icon">🃏</div>
+                <h3>Emydn Match</h3>
+                <p>Uji daya ingatmu dengan mencocokkan pasangan kartu yang sama!</p>
+                <button class="play-btn">Main Sekarang</button>
+            </div>
+
+            <div class="game-card" onclick="playGame('color-game.html')">
+                <div class="game-icon">🎨</div>
+                <h3>Permainan Warna</h3>
+                <p>Uji kecepatan kognitifmu! Fokus pada warna tinta, bukan teksnya.</p>
+                <button class="play-btn">Main Sekarang</button>
+            </div>
+
+            <div class="game-card" onclick="playGame('simon-says.html')">
+                <div class="game-icon">💡</div>
+                <h3>Ikuti Pola</h3>
+                <p>Uji daya ingatmu! Hafalkan dan ulangi urutan cahaya yang menyala.</p>
+                <button class="play-btn">Main Sekarang</button>
+            </div>
+            
             <div class="game-card" onclick="playGame('tebak-kata.html')">
                 <div class="game-icon">🧠</div>
                 <h3>Tebak Kata</h3>
@@ -186,6 +187,14 @@
                 <div class="game-icon">🌍</div>
                 <h3>Tebak Lokasi</h3>
                 <p>Tebak lokasi di Indonesia dari petunjuk. Kenali Nusantara!</p>
+                <button class="play-btn">Main Sekarang</button>
+            </div>
+
+            <!-- ✅ GAME BARU: TETRIS -->
+            <div class="game-card" onclick="playGame('tetris.html')">
+                <div class="game-icon">🎲</div>
+                <h3>Tetris</h3>
+                <p>Susun balok jatuh agar membentuk garis penuh. Latih fokus dan refleksmu!</p>
                 <button class="play-btn">Main Sekarang</button>
             </div>
         </div>

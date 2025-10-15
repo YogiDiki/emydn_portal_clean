@@ -3,31 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Tebak Lokasi Indonesia: pilih jawaban yang benar dari petunjuk. Latih pengetahuan geografi dengan game edukasi EMYDN.">
-    <meta name="robots" content="index, follow">
-    <meta name="keywords" content="tebak lokasi, geografi, game geografi, game edukasi, EMYDN, EMYDN games, Indonesia, belajar geografi, permainan pilihan ganda">
-    <link rel="canonical" href="https://www.emydngroup.my.id/emydn-games/tebak-lokasi.html">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Tebak Lokasi - EMYDN EduGames">
-    <meta property="og:description" content="Tebak Lokasi Indonesia: game edukasi geografi.">
-    <meta property="og:url" content="https://www.emydngroup.my.id/emydn-games/tebak-lokasi.html">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&q=80">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Tebak Lokasi - EMYDN EduGames">
-    <meta name="twitter:description" content="Tebak Lokasi Indonesia: game edukasi geografi.">
-    <meta name="twitter:image" content="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&q=80">
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "Tebak Lokasi - EMYDN EduGames",
-      "applicationCategory": "EducationalGame",
-      "operatingSystem": "Web",
-      "genre": ["Educational","Geography"],
-      "offers": {"@type": "Offer", "price": "0", "priceCurrency": "IDR"},
-      "url": "https://www.emydngroup.my.id/emydn-games/tebak-lokasi.html"
-    }
-    </script>
     <title>Tebak Lokasi - Emydn EduGames</title>
     <style>
         * {
@@ -180,10 +155,20 @@
             text-align: center;
             max-width: 400px;
             width: 90%;
+            animation: modalAppear 0.3s ease-out;
+        }
+        @keyframes modalAppear {
+            from { transform: scale(0.7); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
         .modal-icon {
             font-size: 5em;
             margin-bottom: 20px;
+            animation: iconBounce 0.5s ease-out;
+        }
+        @keyframes iconBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
         }
         .modal-title {
             font-size: 2em;
@@ -204,6 +189,11 @@
             font-size: 1em;
             cursor: pointer;
             margin: 5px;
+            transition: 0.3s;
+        }
+        .modal-btn:hover {
+            background: #DC143C;
+            transform: translateY(-2px);
         }
         .final-score {
             background: #f8f8f8;
@@ -250,11 +240,9 @@
                 Memuat soal...
             </div>
 
-            <div class="options-container" id="optionsContainer">
-                <!-- Options will be loaded here -->
-            </div>
+            <div class="options-container" id="optionsContainer"></div>
 
-            <button class="submit-btn" id="submitBtn" onclick="checkAnswer()" disabled>Kirim Jawaban</button>
+            <button class="submit-btn" id="submitBtn" disabled>Kirim Jawaban</button>
         </div>
     </div>
 
@@ -263,7 +251,7 @@
             <div class="modal-icon" id="modalIcon">✅</div>
             <h2 class="modal-title" id="modalTitle">Benar!</h2>
             <p class="modal-text" id="modalText">Jawaban kamu tepat!</p>
-            <button class="modal-btn" onclick="nextQuestion()">Lanjut</button>
+            <button class="modal-btn" id="nextBtn">Lanjut</button>
         </div>
     </div>
 
@@ -276,18 +264,61 @@
                 <p style="font-size: 2em; color: #8B0000; font-weight: bold;"><span id="finalScore">0</span></p>
                 <p style="color: #666;">Jawaban Benar: <span id="correctAnswers">0</span>/20</p>
             </div>
-            <button class="modal-btn" onclick="playAgain()">Main Lagi</button>
-            <button class="modal-btn" onclick="goToMenu()">Pilih Game Lain</button>
+            <button class="modal-btn" id="playAgainBtn">Main Lagi</button>
+            <button class="modal-btn" id="menuBtn">Pilih Game Lain</button>
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { db, ref, push } from './firebaseConfig.js'; 
+
+        const GAME_PATH = 'tebak-lokasi';
+
         let currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if (!currentUser) {
             window.location.href = 'index.html';
         }
 
+        // AUDIO SYSTEM
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioContext();
+
+        function playSound(frequency, duration, type = 'sine') {
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.frequency.value = frequency;
+            oscillator.type = type;
+            
+            gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+            
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + duration);
+        }
+
+        function playCorrectSound() {
+            playSound(800, 0.15, 'sine');
+            setTimeout(() => playSound(1000, 0.15, 'sine'), 100);
+        }
+
+        function playWrongSound() {
+            playSound(300, 0.3, 'sawtooth');
+        }
+
+        function playNextSound() {
+            playSound(600, 0.1, 'square');
+        }
+
         let allSoal = JSON.parse(localStorage.getItem('soalTebakLokasi'));
+        if (!allSoal || allSoal.length === 0) {
+            alert("Data soal Tebak Lokasi tidak tersedia!");
+            window.location.href = 'menu.html';
+        }
+        
         let selectedSoal = shuffleArray([...allSoal]).slice(0, 20);
         let currentQuestion = 0;
         let score = 0;
@@ -323,7 +354,6 @@
             document.getElementById('questionNum').textContent = currentQuestion + 1;
             document.getElementById('clueBox').textContent = soal.clue;
             
-            // Load options
             const optionsContainer = document.getElementById('optionsContainer');
             optionsContainer.innerHTML = '';
             selectedAnswer = null;
@@ -334,7 +364,7 @@
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.textContent = option;
-                btn.onclick = () => selectOption(btn, option);
+                btn.addEventListener('click', () => selectOption(btn, option));
                 optionsContainer.appendChild(btn);
             });
             
@@ -343,15 +373,14 @@
         }
 
         function selectOption(btn, answer) {
-            // Remove previous selection
             document.querySelectorAll('.option-btn').forEach(b => {
                 b.classList.remove('selected');
             });
             
-            // Add selection to clicked button
             btn.classList.add('selected');
             selectedAnswer = answer;
             document.getElementById('submitBtn').disabled = false;
+            playSound(400, 0.05, 'square');
         }
 
         function startTimer() {
@@ -397,10 +426,12 @@
             const text = document.getElementById('modalText');
 
             if (isCorrect) {
+                playCorrectSound();
                 icon.textContent = '✅';
                 title.textContent = 'Benar!';
                 text.textContent = 'Hebat! Kamu tahu lokasinya!';
             } else {
+                playWrongSound();
                 icon.textContent = '❌';
                 title.textContent = 'Salah!';
                 text.textContent = `Jawaban yang benar: ${correctAnswer}`;
@@ -410,36 +441,40 @@
         }
 
         function nextQuestion() {
+            playNextSound();
             document.getElementById('resultModal').style.display = 'none';
             currentQuestion++;
             loadQuestion();
         }
 
-        function endGame() {
-            clearInterval(timer);
-            
-            let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
-            leaderboard.push({
+        function sendScoreToFirebase(finalScore) {
+            const scoreData = {
                 nama: currentUser.nama,
                 kota: currentUser.kota,
-                score: score,
-                game: 'Tebak Lokasi',
-                date: new Date().toISOString()
-            });
-            localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+                skor: finalScore,
+                timestamp: Date.now()
+            };
 
+            const leaderboardRef = ref(db, `leaderboard/${GAME_PATH}`);
+            push(leaderboardRef, scoreData)
+                .then(() => console.log('✅ Skor Tebak Lokasi terkirim!'))
+                .catch((error) => console.error('❌ Error:', error));
+        }
+
+        function endGame() {
+            clearInterval(timer);
+            sendScoreToFirebase(score);
+            
             document.getElementById('finalScore').textContent = score;
             document.getElementById('correctAnswers').textContent = correctCount;
             document.getElementById('finalModal').style.display = 'flex';
         }
 
-        function playAgain() {
-            location.reload();
-        }
-
-        function goToMenu() {
-            window.location.href = 'menu.html';
-        }
+        // EVENT LISTENERS
+        document.getElementById('submitBtn').addEventListener('click', checkAnswer);
+        document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+        document.getElementById('playAgainBtn').addEventListener('click', () => location.reload());
+        document.getElementById('menuBtn').addEventListener('click', () => window.location.href = 'menu.html');
 
         loadQuestion();
     </script>
