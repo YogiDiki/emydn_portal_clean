@@ -1,36 +1,23 @@
-# EMYDN GROUP - robots.txt
-# Aturan untuk Search Engine Crawlers
+# robots.txt untuk emydngroup.my.id
+# Versi optimal - mengikuti panduan Google Search Central 2024
 
-# Izinkan semua bot untuk crawl semua halaman
 User-agent: *
 Allow: /
-Allow: /emydn-games/
 Disallow: /admin/
 Disallow: /api/
-Disallow: /*.json
-Disallow: /*.js
+Disallow: /*.json$
 
-# Crawl delay untuk mengurangi server load
+# Penting: jangan blokir JS & CSS
+Allow: /*.js$
+Allow: /*.css$
+
+# (Opsional) sedikit jeda crawl biar server tidak berat
 Crawl-delay: 1
 
-# Khusus untuk Googlebot - lebih agresif
-User-agent: Googlebot
-Allow: /
-Allow: /emydn-games/
-Crawl-delay: 0.5
-Request-rate: 3/1s
+# Sitemap utama
+Sitemap: https://www.emydngroup.my.id/sitemap.xml
 
-# Khusus untuk Bingbot
-User-agent: Bingbot
-Allow: /
-Allow: /emydn-games/
-Crawl-delay: 1
-Request-rate: 2/1s
-
-# Sitemap
-Sitemap: https://emydngroup.com/sitemap.xml
-
-# Block aggressive/spam bots
+# Blokir bot agresif yang sering scraping
 User-agent: AhrefsBot
 User-agent: SemrushBot
 User-agent: DotBot
