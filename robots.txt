@@ -1,27 +1,17 @@
 # robots.txt untuk emydngroup.my.id
-# Versi optimal - Perbaikan Struktur untuk Crawler Google
 
+# Sitemap Location (PENTING: Letakkan di paling atas)
+Sitemap: https://www.emydngroup.my.id/sitemap.xml
+
+# Aturan untuk semua bot
 User-agent: *
-# Izinkan akses umum untuk Google, Bing, dll.
 Allow: /
 
-# IZIN KHUSUS (Jika dibutuhkan)
-# Pastikan Googlebot bisa mengakses semua aset yang penting
-Allow: /*.js$
-Allow: /*.css$
-
-# Halaman/Path yang Dilarang
+# Blokir folder tertentu (jika ada)
 Disallow: /admin/
 Disallow: /api/
-Disallow: /*.json$
 
-# (Opsional) Crawl Delay - Tidak lagi disarankan oleh Google, tapi tidak dilarang
-# Crawl-delay: 1 
-
-# =======================================================
-# BLOKIR BOT AGRESIF (dengan target User-agent spesifik)
-# =======================================================
-
+# Blokir bot agresif
 User-agent: AhrefsBot
 Disallow: /
 
@@ -33,8 +23,3 @@ Disallow: /
 
 User-agent: MJ12bot
 Disallow: /
-
-# =======================================================
-# LOKASI SITEMAP (PENTING: Selalu letakkan di baris paling bawah/paling atas)
-# =======================================================
-Sitemap: https://www.emydngroup.my.id/sitemap.xml
