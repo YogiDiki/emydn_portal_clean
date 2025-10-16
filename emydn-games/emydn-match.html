@@ -1,757 +1,549 @@
-function checkMatch() {
-    isProcessing = true; 
-    const [card1, card2] = flippedCards;
-    const content1 = card1.getAttribute('data-content');
-    const content2 = card2.getAttribute('data-content');
-    
-    if<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Emydn Match: Transportasi Edition</title>
-<style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #8B0000, #DC143C);
-    min-height: 100vh;
-    padding: 20px;
-}
-.container {
-    max-width: 900px;
-    margin: 0 auto;
-}
-.header {
-    background: white;
-    padding: 20px;
-    border-radius: 15px;
-    margin-bottom: 20px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-.score-info {
-    color: #8B0000;
-    font-size: 1.2em;
-    font-weight: bold;
-    flex-grow: 1;
-    text-align: center;
-}
-.back-btn {
-    padding: 10px 20px;
-    background: #8B0000;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    transition: background 0.3s;
-}
-.back-btn:hover {
-    background: #DC143C;
-}
-
-.game-area {
-    background: white;
-    padding: 40px 20px;
-    border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-    text-align: center;
-    margin-bottom: 20px;
-}
-.game-title {
-    color: #8B0000;
-    font-size: 2.5em;
-    margin-bottom: 5px;
-}
-.edition-text {
-    color: #666;
-    font-size: 1.2em;
-    margin-bottom: 20px;
-}
-
-.game-board {
-    display: grid;
-    gap: 8px;
-    margin-top: 20px;
-    padding: 10px;
-    max-width: 100%; 
-    margin-left: auto;
-    margin-right: auto;
-    visibility: hidden;
-    justify-content: center;
-}
-.game-board.active {
-    visibility: visible;
-}
-
-.card-wrapper {
-    aspect-ratio: 1 / 1;
-    perspective: 1000px; 
-    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-    cursor: pointer;
-    max-width: 120px;
-    max-height: 120px;
-}
-
-.card-wrapper.matched {
-    opacity: 0;
-    transform: scale(0);
-    pointer-events: none;
-}
-
-.card-wrapper.disabled {
-     pointer-events: none;
-}
-
-.game-board.small-cards .card-wrapper {
-    max-width: 80px;
-    max-height: 80px;
-}
-
-.game-board.medium-cards .card-wrapper {
-    max-width: 95px;
-    max-height: 95px;
-}
-
-.game-board.large-cards .card-wrapper {
-    max-width: 110px;
-    max-height: 110px;
-}
-
-.card-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    transition: transform 0.6s;
-    transform-style: preserve-3d;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    border-radius: 8px;
-}
-.card-wrapper.flipped .card-inner {
-    transform: rotateY(180deg);
-}
-
-.card-face {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    border-radius: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 2.5em;
-    border: 2px solid #666;
-}
-
-.game-board.small-cards .card-face {
-    font-size: 1.8em;
-}
-
-.game-board.medium-cards .card-face {
-    font-size: 2.2em;
-}
-
-.game-board.large-cards .card-face {
-    font-size: 2.5em;
-}
-
-.card-back {
-    background: linear-gradient(45deg, #FF6347, #DC143C);
-    color: white;
-    transform: rotateY(0deg);
-    overflow: hidden;
-}
-.animated-q {
-    font-size: 3em;
-    font-weight: bold;
-    color: #FFC000; 
-    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-    line-height: 1;
-    position: relative;
-    animation: bounce 2s infinite ease-in-out;
-}
-
-.game-board.small-cards .animated-q {
-    font-size: 2em;
-}
-
-.game-board.medium-cards .animated-q {
-    font-size: 2.5em;
-}
-
-.animated-q::before, .animated-q::after {
-    content: '';
-    position: absolute;
-    background: black;
-    width: 6px; 
-    height: 6px;
-    border-radius: 50%;
-    top: 15%;
-    transform: translateX(-50%);
-    left: 30%;
-}
-.animated-q::after {
-    left: 70%;
-}
-
-.game-board.small-cards .animated-q::before,
-.game-board.small-cards .animated-q::after {
-    width: 4px;
-    height: 4px;
-}
-
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
-}
-
-.card-front {
-    background-color: #ffffff;
-    color: #333;
-    transform: rotateY(180deg);
-}
-
-.instructions {
-    margin-top: 30px;
-    padding: 20px;
-    border-top: 1px solid #ddd;
-    text-align: left;
-    font-size: 1em;
-    color: #333;
-}
-.instructions h3 {
-    color: #8B0000;
-    margin-bottom: 10px;
-}
-.instructions ul {
-    list-style: disc;
-    margin-left: 20px;
-    margin-bottom: 15px;
-}
-.instructions li {
-    margin-bottom: 8px;
-}
-
-.start-btn {
-    padding: 15px 30px;
-    background: #8B0000;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1em;
-    cursor: pointer;
-    transition: background 0.3s;
-    margin-top: 20px;
-}
-.start-btn:hover {
-    background: #DC143C;
-}
-.menu-link {
-    display: block;
-    margin-top: 15px;
-    color: #8B0000;
-    text-decoration: none;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-    justify-content: center;
-    align-items: center;
-}
-.modal-content {
-    background-color: #fefefe;
-    padding: 30px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 400px;
-    border-radius: 15px;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-.modal-title {
-    color: #8B0000;
-    margin-bottom: 10px;
-}
-.modal-btn {
-    padding: 10px 20px;
-    background: #8B0000;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 10px;
-    margin: 5px;
-}
-.modal-btn:hover {
-    background: #DC143C;
-}
-
-#levelUpModal .modal-content {
-    background: linear-gradient(135deg, #FFD700, #FFA500);
-    color: #8B0000;
-    transform: scale(0.8);
-    opacity: 0;
-    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-}
-#levelUpModal.show .modal-content {
-    transform: scale(1);
-    opacity: 1;
-}
-#levelUpModal .level-title {
-    font-size: 2.5em;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #8B0000;
-    animation: flash 1s infinite alternate;
-}
-#levelUpModal .level-message {
-    font-size: 1.3em;
-    margin-bottom: 20px;
-}
-
-@keyframes flash {
-    from { color: #8B0000; }
-    to { color: #DC143C; }
-}
-
-@media (max-width: 768px) {
-    .game-board {
-        grid-template-columns: repeat(3, 1fr) !important;
-        max-width: 95%;
-    }
-    .card-wrapper {
-        max-width: 100px !important;
-        max-height: 100px !important;
-    }
-    .card-face {
-        font-size: 2em !important;
-    }
-    .animated-q {
-        font-size: 2.2em !important;
-    }
-    .header {
-        flex-direction: column;
-        gap: 10px;
-    }
-    .score-info {
-        width: 100%;
-    }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Emydn Match: Transportasi Edition - Game Memory edukatif dengan sistem level progresif. Cocokkan kartu kendaraan & tingkatkan daya ingat. 10 level tantangan!">
+    <meta name="keywords" content="Memory Game, Match Game, Memory Transportasi, Educational Game, Emydn Match, Game Ingatan">
+    <meta name="robots" content="index, follow">
+    
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="canonical" href="https://www.emydngroup.my.id/emydn-games/emydn-match.html">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #8B0000, #DC143C);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .score-info {
+            color: #8B0000;
+            font-size: 1.2em;
+            font-weight: bold;
+            flex-grow: 1;
+            text-align: center;
+        }
+        .back-btn {
+            padding: 10px 20px;
+            background: #8B0000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+        .back-btn:hover {
+            background: #DC143C;
+        }
+        .game-area {
+            background: white;
+            padding: 40px 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .game-title {
+            color: #8B0000;
+            font-size: 2.5em;
+            margin-bottom: 5px;
+        }
+        .edition-text {
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        .game-board {
+            display: grid;
+            gap: 8px;
+            margin-top: 20px;
+            padding: 10px;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            visibility: hidden;
+            justify-content: center;
+        }
+        .game-board.active {
+            visibility: visible;
+        }
+        .card-wrapper {
+            aspect-ratio: 1 / 1;
+            perspective: 1000px;
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+            cursor: pointer;
+            max-width: 120px;
+            max-height: 120px;
+        }
+        .card-wrapper.matched {
+            opacity: 0;
+            transform: scale(0);
+            pointer-events: none;
+        }
+        .card-wrapper.disabled {
+            pointer-events: none;
+        }
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+        .card-wrapper.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5em;
+            border: 2px solid #666;
+        }
+        .card-back {
+            background: linear-gradient(45deg, #FF6347, #DC143C);
+            color: white;
+            transform: rotateY(0deg);
+        }
+        .card-front {
+            background-color: #ffffff;
+            color: #333;
+            transform: rotateY(180deg);
+        }
+        .animated-q {
+            font-size: 3em;
+            font-weight: bold;
+            color: #FFC000;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+        .instructions {
+            margin-top: 30px;
+            padding: 20px;
+            border-top: 1px solid #ddd;
+            text-align: left;
+            font-size: 1em;
+            color: #333;
+        }
+        .instructions h3 {
+            color: #8B0000;
+            margin-bottom: 10px;
+        }
+        .instructions ul {
+            list-style: disc;
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        .start-btn {
+            padding: 15px 30px;
+            background: #8B0000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 20px;
+        }
+        .start-btn:hover {
+            background: #DC143C;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            padding: 30px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .modal-title {
+            color: #8B0000;
+            margin-bottom: 10px;
+        }
+        .modal-btn {
+            padding: 10px 20px;
+            background: #8B0000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            margin: 5px;
+        }
+        .modal-btn:hover {
+            background: #DC143C;
+        }
+        @media (max-width: 768px) {
+            .game-board {
+                grid-template-columns: repeat(3, 1fr) !important;
+                max-width: 95%;
+            }
+            .card-wrapper {
+                max-width: 100px !important;
+                max-height: 100px !important;
+            }
+            .header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .score-info {
+                width: 100%;
+            }
+        }
+    </style>
+    
+    <title>Emydn Match - Game Memory Transportasi | EMYDN Games</title>
 </head>
 <body>
-<div class="container">
-<div class="header">
-    <div class="score-info">
-        ⭐ Level: <span id="level">1</span>
-    </div>
-    <div class="score-info">
-        🎯 Skor: <span id="score">0</span>
-    </div>
-    <div class="score-info">
-        🖼️ Pasangan: <span id="pairsRemaining">9</span>/<span id="pairsTotal">9</span>
-    </div>
-    <div class="score-info">
-        ⏱️ Waktu: <span id="time">05:00</span>
-    </div>
-    <a href="menu.html" class="back-btn">← Menu</a>
-</div>
+    <div class="container">
+        <div class="header">
+            <div class="score-info">⭐ Level: <span id="level">1</span> | 🎯 Skor: <span id="score">0</span> | 🖼️ Pasangan: <span id="pairsRemaining">9</span>/<span id="pairsTotal">9</span> | ⏱️ Waktu: <span id="time">05:00</span></div>
+            <a href="menu.html" class="back-btn">← Menu</a>
+        </div>
 
-<div class="game-area">
-    <h1 class="game-title">Emydn Match 🚗</h1>
-    <p class="edition-text">Transportasi Edition</p>
-
-    <div class="game-board" id="gameBoard"></div>
-    
-    <div class="instructions" id="instructions">
-        <h3>Cara Bermain Emydn Match (Transportasi Edition)</h3>
-        <p>Tujuan:</p>
-        <ul>
-            <li>Cocokkan dua gambar kendaraan yang sama (mobil, pesawat, kapal, motor, bus, dll).</li>
-            <li>Jika pasangan benar, kedua kartu akan menghilang dan kamu dapat +10 poin.</li>
-        </ul>
-        <p>Level & Kesulitan:</p>
-        <ul>
-            <li>Game memiliki 10 level total.</li>
-            <li>Level 1 dimulai dengan 18 kartu (9 pasangan) dan waktu 5 menit (300 detik).</li>
-            <li>Setiap naik level:
+        <div class="game-area">
+            <h1 class="game-title">Emydn Match 🚗</h1>
+            <p class="edition-text">Transportasi Edition</p>
+            <div class="game-board" id="gameBoard"></div>
+            
+            <div class="instructions" id="instructions">
+                <h3>Cara Bermain Emydn Match</h3>
+                <p><strong>Tujuan:</strong></p>
                 <ul>
-                    <li>Jumlah pasangan bertambah.</li>
-                    <li>Waktu berkurang 30 detik (semakin cepat dan sulit).</li>
+                    <li>Cocokkan dua gambar kendaraan yang sama (mobil, pesawat, kapal, motor, bus, dll).</li>
+                    <li>Jika pasangan benar, kedua kartu menghilang dan kamu dapat +10 poin.</li>
                 </ul>
-            </li>
-            <li>Kamu tidak bisa lanjut ke level berikutnya jika gagal menyelesaikan level saat waktu habis.</li>
-        </ul>
-        <p>Skor Total:</p>
-        <ul>
-            <li>Skor dari semua level dijumlahkan menjadi total skor akhir, dan akan otomatis tersimpan di leaderboard Firebase jika permainan selesai (baik karena mencapai level terakhir, maupun gagal di tengah jalan).</li>
-        </ul>
-        <p>Kontrol:</p>
-        <ul>
-            <li>Klik pada kartu untuk membaliknya.</li>
-            <li>Jika dua kartu cocok, mereka menghilang.</li>
-            <li>Jika tidak cocok, keduanya tertutup kembali setelah 1 detik.</li>
-        </ul>
+            </div>
+            <button class="start-btn" id="startBtn" onclick="startGame()">Mulai Permainan</button>
+            <a href="menu.html" style="display:block; margin-top: 15px; color: #8B0000; text-decoration: none;">← Kembali ke Menu Utama</a>
+        </div>
     </div>
 
-    <button class="start-btn" id="startBtn" onclick="startGame()">Mulai Permainan</button>
-    <a href="menu.html" class="menu-link" id="menuLink">← Kembali ke Menu Utama</a>
-</div>
-</div>
+    <div id="endGameModal" class="modal">
+        <div class="modal-content">
+            <h2 class="modal-title" id="modalTitle">Permainan Selesai!</h2>
+            <p id="modalMessage">Skor Akhir: <span id="finalScore">0</span></p>
+            <p id="finalLevel">Anda mencapai Level <span id="levelReached">1</span></p>
+            <button class="modal-btn" onclick="location.reload()">Main Lagi</button>
+            <button class="modal-btn" onclick="goToMenu()">Pilih Game Lain</button>
+        </div>
+    </div>
 
-<div id="endGameModal" class="modal">
-<div class="modal-content">
-    <h2 class="modal-title" id="modalTitle">Permainan Selesai!</h2>
-    <p id="modalMessage">Skor Akhir: <span id="finalScore">0</span></p>
-    <p id="finalLevel">Anda mencapai Level <span id="levelReached">1</span></p>
-    <button class="modal-btn" onclick="location.reload()">Main Lagi</button>
-    <button class="modal-btn" onclick="goToMenu()">Pilih Game Lain</button>
-</div>
-</div>
+    <div id="levelUpModal" class="modal">
+        <div class="modal-content">
+            <p style="font-size: 3em;">🎉</p>
+            <h2 class="modal-title">LEVEL UP!</h2>
+            <p style="font-size: 1.3em; margin: 20px 0;">Level <span id="prevLevel">1</span> Selesai! Lanjut ke Level <span id="nextLevel">2</span>!</p>
+            <button class="modal-btn" onclick="hideLevelUpModal()">LANJUT BERMAIN</button>
+        </div>
+    </div>
 
-<div id="levelUpModal" class="modal">
-<div class="modal-content">
-    <p style="font-size: 3em;">🎉</p>
-    <h2 class="level-title">LEVEL UP!</h2>
-    <p class="level-message">Level <span id="prevLevel">1</span> Selesai!</p>
-    <p class="level-message" style="color: #666; margin-top: -10px;">Lanjut ke Level <span id="nextLevel">2</span>!</p>
-    <button class="modal-btn" onclick="hideLevelUpModal()">LANJUT BERMAIN</button>
-</div>
-</div>
+    <script type="module">
+        import { db, ref, push } from './firebaseConfig.js';
 
-<script type="module">
-// ====== 1. IMPORT FIREBASE DARI firebaseConfig.js ======
-import { db, ref, push } from './firebaseConfig.js';
+        const GAME_PATH = 'emydn-match';
 
-const GAME_PATH = 'emydn-match'; 
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser) {
+            alert('Silakan login terlebih dahulu!');
+            window.location.href = 'index.html';
+        }
 
-// ====== 2. CEK LOGIN USER ======
-let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-if (!currentUser) {
-    alert('Silakan login terlebih dahulu!');
-    window.location.href = 'index.html';
-}
+        const cardContents = ["🚌", "🚗", "🚂", "🚢", "🚁", "🚀", "🚦", "🚏", "🏍️", "🚕", "🚃", "🛴", "🚲", "⛵️", "🛺", "🛰️", "🛸", "🛵"];
 
-// ====== 2.5 AUDIO SYSTEM ======
-const AudioContext = window.AudioContext || window.webkitAudioContext;
-const audioCtx = new AudioContext();
+        const board = document.getElementById('gameBoard');
+        const scoreDisplay = document.getElementById('score');
+        const levelDisplay = document.getElementById('level');
+        const timeDisplay = document.getElementById('time');
+        const endGameModal = document.getElementById('endGameModal');
+        const levelUpModal = document.getElementById('levelUpModal');
+        const pairsRemainingDisplay = document.getElementById('pairsRemaining');
+        const pairsTotalDisplay = document.getElementById('pairsTotal');
 
-function playSound(frequency, duration, type = 'sine') {
-    const oscillator = audioCtx.createOscillator();
-    const gainNode = audioCtx.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-    
-    oscillator.frequency.value = frequency;
-    oscillator.type = type;
-    
-    gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-    
-    oscillator.start(audioCtx.currentTime);
-    oscillator.stop(audioCtx.currentTime + duration);
-}
+        let cards = [];
+        let flippedCards = [];
+        let score = 0;
+        let level = 1;
+        let timer;
+        let timeRemaining;
+        let isProcessing = false;
+        let currentPairsTotal = 0;
 
-function playLevelUpSound() {
-    // Melodi naik untuk level up
-    const melody = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
-    melody.forEach((freq, i) => {
-        setTimeout(() => playSound(freq, 0.2, 'sine'), i * 100);
-    });
-}
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
 
-function playGameOverSound() {
-    // Melodi turun untuk game over
-    const melody = [783.99, 659.25, 523.25, 392.00]; // G5, E5, C5, G4
-    melody.forEach((freq, i) => {
-        setTimeout(() => playSound(freq, 0.3, 'triangle'), i * 150);
-    });
-}
+        function updateTimeDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            timeDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
 
-function playMatchSound() {
-    // Suara ceria untuk match
-    playSound(800, 0.1, 'square');
-    setTimeout(() => playSound(1000, 0.1, 'square'), 100);
-}
+        function updatePairsLegend() {
+            const matchedCardsCount = board.querySelectorAll('.card-wrapper.matched').length / 2;
+            pairsRemainingDisplay.textContent = currentPairsTotal - matchedCardsCount;
+            pairsTotalDisplay.textContent = currentPairsTotal;
+        }
 
-function playTimeWarningSound() {
-    // Suara peringatan waktu
-    playSound(300, 0.2, 'sawtooth');
-}
-
-const cardContents = ["🚌", "🚗", "🚂", "🚢", "🚁", "🚀", "🚦", "🚏", "🏍️", "🚕", "🚃", "🛴", "🚲", "⛵️", "🛺", "🛰️", "🛸", "🛵"];
-
-const board = document.getElementById('gameBoard');
-const startButton = document.getElementById('startBtn');
-const scoreDisplay = document.getElementById('score');
-const levelDisplay = document.getElementById('level');
-const timeDisplay = document.getElementById('time');
-const endGameModal = document.getElementById('endGameModal');
-const levelUpModal = document.getElementById('levelUpModal');
-const pairsRemainingDisplay = document.getElementById('pairsRemaining');
-const pairsTotalDisplay = document.getElementById('pairsTotal');
-
-let cards = [];
-let flippedCards = [];
-let score = 0;
-let level = 1;
-let timer;
-let timeRemaining; 
-let isProcessing = false; 
-let currentPairsTotal = 0;
-
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-}
-
-function updateTimeDisplay() {
-    const minutes = Math.floor(timeRemaining / 60);
-    const seconds = timeRemaining % 60;
-    timeDisplay.textContent = 
-        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-}
-
-function updatePairsLegend() {
-    const matchedCardsCount = board.querySelectorAll('.card-wrapper.matched').length / 2;
-    pairsRemainingDisplay.textContent = currentPairsTotal - matchedCardsCount;
-    pairsTotalDisplay.textContent = currentPairsTotal;
-}
-
-function initializeGame(currentLevel) {
-    board.innerHTML = '';
-    flippedCards = [];
-    
-    const baseTime = 300; 
-    const timeReduction = (currentLevel - 1) * 30;
-    timeRemaining = Math.max(60, baseTime - timeReduction); 
-
-    let pairsCount;
-    if (currentLevel === 1) pairsCount = 9;
-    else if (currentLevel <= 3) pairsCount = 11;
-    else if (currentLevel <= 6) pairsCount = 13;
-    else if (currentLevel <= 9) pairsCount = 15;
-    else if (currentLevel === 10) pairsCount = 18;
-    
-    currentPairsTotal = pairsCount;
-    
-    const selectedContent = shuffleArray([...cardContents]).slice(0, pairsCount);
-    const gameCards = shuffleArray([...selectedContent, ...selectedContent]);
-    
-    let columns = 4;
-    let cardSize = 'large-cards';
-    
-    if (gameCards.length > 30) {
-        columns = 6;
-        cardSize = 'small-cards';
-    } else if (gameCards.length > 20) {
-        columns = 5;
-        cardSize = 'medium-cards';
-    } else if (gameCards.length > 16) {
-        columns = 5;
-        cardSize = 'medium-cards';
-    }
-    
-    board.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
-    board.className = 'game-board active ' + cardSize;
-    
-    levelDisplay.textContent = currentLevel;
-    updateTimeDisplay();
-    updatePairsLegend();
-    
-    cards = [];
-    gameCards.forEach((content, index) => {
-        const cardWrapper = document.createElement('div');
-        cardWrapper.classList.add('card-wrapper');
-        cardWrapper.setAttribute('data-content', content);
-        cardWrapper.onclick = () => flipCard(cardWrapper); 
-        
-        cardWrapper.innerHTML = `
-            <div class="card-inner">
-                <div class="card-face card-back">
-                    <span class="animated-q">?</span>
-                </div>
-                <div class="card-face card-front">${content}</div>
-            </div>
-        `;
-        board.appendChild(cardWrapper);
-        cards.push(cardWrapper);
-    });
-}
-
-window.startGame = function() {
-    startButton.style.display = 'none';
-    document.getElementById('instructions').style.display = 'none';
-    document.getElementById('menuLink').style.display = 'none';
-    
-    board.classList.add('active'); 
-    
-    score = 0;
-    level = 1;
-    scoreDisplay.textContent = score;
-
-    initializeGame(level);
-    startTimer();
-}
-
-window.flipCard = function(card) {
-    if (isProcessing || card.classList.contains('flipped') || flippedCards.length >= 2 || card.classList.contains('matched')) return;
-
-    card.classList.add('flipped');
-    flippedCards.push(card);
-
-    if (flippedCards.length === 2) {
-        checkMatch();
-    }
-}
-
-function checkMatch() {
-    isProcessing = true; 
-    const [card1, card2] = flippedCards;
-    const content1 = card1.getAttribute('data-content');
-    const content2 = card2.getAttribute('data-content');
-    
-    if (content1 === content2) {
-        // MATCH! Play sound
-        playMatchSound();
-        
-        score += 10;
-        scoreDisplay.textContent = score;
-        
-        setTimeout(() => {
-            card1.classList.add('matched');
-            card2.classList.add('matched');
-            
+        function initializeGame(currentLevel) {
+            board.innerHTML = '';
             flippedCards = [];
-            isProcessing = false;
+            
+            const baseTime = 300;
+            const timeReduction = (currentLevel - 1) * 30;
+            timeRemaining = Math.max(60, baseTime - timeReduction);
+
+            let pairsCount;
+            if (currentLevel === 1) pairsCount = 9;
+            else if (currentLevel <= 3) pairsCount = 11;
+            else if (currentLevel <= 6) pairsCount = 13;
+            else if (currentLevel <= 9) pairsCount = 15;
+            else if (currentLevel === 10) pairsCount = 18;
+            
+            currentPairsTotal = pairsCount;
+            
+            const selectedContent = shuffleArray([...cardContents]).slice(0, pairsCount);
+            const gameCards = shuffleArray([...selectedContent, ...selectedContent]);
+            
+            let columns = 4;
+            let cardSize = 'large-cards';
+            
+            if (gameCards.length > 30) {
+                columns = 6;
+                cardSize = 'small-cards';
+            } else if (gameCards.length > 20) {
+                columns = 5;
+                cardSize = 'medium-cards';
+            } else if (gameCards.length > 16) {
+                columns = 5;
+                cardSize = 'medium-cards';
+            }
+            
+            board.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+            board.className = 'game-board active ' + cardSize;
+            
+            levelDisplay.textContent = currentLevel;
+            updateTimeDisplay();
             updatePairsLegend();
-            checkWin();
-        }, 500); 
-    } else {
-        setTimeout(() => {
-            card1.classList.remove('flipped');
-            card2.classList.remove('flipped');
             
-            flippedCards = [];
-            isProcessing = false;
-        }, 1000); 
-    }
-}
-
-function checkWin() {
-    const remainingCards = board.querySelectorAll('.card-wrapper:not(.matched)').length;
-    if (remainingCards === 0) {
-        clearInterval(timer);
-        
-        if (level < 10) { 
-            levelUp(level);
-            level++;
-        } else {
-            endGame('Selamat! Anda telah menyelesaikan semua 10 level!');
+            cards = [];
+            gameCards.forEach((content) => {
+                const cardWrapper = document.createElement('div');
+                cardWrapper.classList.add('card-wrapper');
+                cardWrapper.setAttribute('data-content', content);
+                cardWrapper.onclick = () => flipCard(cardWrapper);
+                
+                cardWrapper.innerHTML = `
+                    <div class="card-inner">
+                        <div class="card-face card-back">
+                            <span class="animated-q">?</span>
+                        </div>
+                        <div class="card-face card-front">${content}</div>
+                    </div>
+                `;
+                board.appendChild(cardWrapper);
+                cards.push(cardWrapper);
+            });
         }
-    }
-}
 
-function startTimer() {
-    clearInterval(timer);
-    updateTimeDisplay();
+        window.startGame = function() {
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('instructions').style.display = 'none';
+            
+            board.classList.add('active');
+            
+            score = 0;
+            level = 1;
+            scoreDisplay.textContent = score;
 
-    timer = setInterval(() => {
-        timeRemaining--;
-        updateTimeDisplay();
+            initializeGame(level);
+            startTimer();
+        }
 
-        if (timeRemaining <= 0) {
+        window.flipCard = function(card) {
+            if (isProcessing || card.classList.contains('flipped') || flippedCards.length >= 2 || card.classList.contains('matched')) return;
+
+            card.classList.add('flipped');
+            flippedCards.push(card);
+
+            if (flippedCards.length === 2) {
+                checkMatch();
+            }
+        }
+
+        function checkMatch() {
+            isProcessing = true;
+            const [card1, card2] = flippedCards;
+            const content1 = card1.getAttribute('data-content');
+            const content2 = card2.getAttribute('data-content');
+            
+            if (content1 === content2) {
+                score += 10;
+                scoreDisplay.textContent = score;
+                
+                setTimeout(() => {
+                    card1.classList.add('matched');
+                    card2.classList.add('matched');
+                    
+                    flippedCards = [];
+                    isProcessing = false;
+                    updatePairsLegend();
+                    checkWin();
+                }, 500);
+            } else {
+                setTimeout(() => {
+                    card1.classList.remove('flipped');
+                    card2.classList.remove('flipped');
+                    
+                    flippedCards = [];
+                    isProcessing = false;
+                }, 1000);
+            }
+        }
+
+        function checkWin() {
+            const remainingCards = board.querySelectorAll('.card-wrapper:not(.matched)').length;
+            if (remainingCards === 0) {
+                clearInterval(timer);
+                
+                if (level < 10) {
+                    levelUp(level);
+                    level++;
+                } else {
+                    endGame('Selamat! Anda telah menyelesaikan semua 10 level!');
+                }
+            }
+        }
+
+        function startTimer() {
             clearInterval(timer);
-            endGame('Waktu habis! Coba lagi!');
+            updateTimeDisplay();
+
+            timer = setInterval(() => {
+                timeRemaining--;
+                updateTimeDisplay();
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timer);
+                    endGame('Waktu habis! Coba lagi!');
+                }
+            }, 1000);
         }
-    }, 1000);
-}
 
-function levelUp(currentLevel) {
-    document.getElementById('prevLevel').textContent = currentLevel;
-    document.getElementById('nextLevel').textContent = currentLevel + 1;
-    levelUpModal.style.display = 'flex';
+        function levelUp(currentLevel) {
+            document.getElementById('prevLevel').textContent = currentLevel;
+            document.getElementById('nextLevel').textContent = currentLevel + 1;
+            levelUpModal.style.display = 'flex';
+        }
+
+        window.hideLevelUpModal = function() {
+            levelUpModal.style.display = 'none';
+
+            setTimeout(() => {
+                initializeGame(level);
+                startTimer();
+            }, 500);
+        }
+
+        function sendScoreToFirebase(finalScore) {
+            const scoreData = {
+                nama: currentUser.nama,
+                kota: currentUser.kota,
+                skor: finalScore,
+                timestamp: Date.now()
+            };
+
+            const leaderboardRef = ref(db, `leaderboard/${GAME_PATH}`);
+            push(leaderboardRef, scoreData)
+                .then(() => console.log('✅ Skor Emydn Match berhasil dikirim ke Firebase!'))
+                .catch((error) => console.error('❌ Gagal mengirim skor:', error));
+        }
+
+        function endGame(message) {
+            clearInterval(timer);
+            board.classList.remove('active');
+            
+            sendScoreToFirebase(score);
+            
+            document.getElementById('modalTitle').textContent = message.includes('Selamat') ? '🎉 Permainan Selesai!' : '😔 Waktu Habis!';
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('levelReached').textContent = level;
+            endGameModal.style.display = 'flex';
+        }
+
+        window.goToMenu = function() {
+            window.location.href = 'menu.html';
+        }
+
+        window.onload = function() {
+            timeRemaining = 300;
+            updateTimeDisplay();
+            currentPairsTotal = 9;
+            updatePairsLegend();
+        };
+    </script>
     
-    setTimeout(() => {
-        levelUpModal.classList.add('show');
-    }, 10); 
-}
-
-window.hideLevelUpModal = function() {
-    levelUpModal.classList.remove('show');
-    levelUpModal.style.display = 'none';
-
-    setTimeout(() => {
-        initializeGame(level);
-        startTimer();
-    }, 500);
-}
-
-function sendScoreToFirebase(finalScore, finalLevel) {
-    const scoreData = {
-        nama: currentUser.nama,
-        kota: currentUser.kota,
-        skor: finalScore,
-        timestamp: Date.now()
-    };
-
-    const leaderboardRef = ref(db, `leaderboard/${GAME_PATH}`);
-
-    push(leaderboardRef, scoreData)
-        .then(() => {
-            console.log('✅ Skor Emydn Match berhasil dikirim ke Firebase!');
-        })
-        .catch((error) => {
-            console.error('❌ Gagal mengirim skor Emydn Match ke Firebase:', error);
-        });
-}
-
-function endGame(message) {
-    clearInterval(timer);
-    board.classList.remove('active'); 
-    
-    sendScoreToFirebase(score, level);
-    
-    document.getElementById('modalTitle').textContent = message.includes('Selamat') ? '🎉 Permainan Selesai!' : '😔 Gagal di Level Ini!';
-    document.getElementById('finalScore').textContent = score;
-    document.getElementById('levelReached').textContent = level;
-    endGameModal.style.display = 'flex';
-}
-
-window.goToMenu = function() {
-     window.location.href = 'menu.html';
-}
-
-window.onload = function() {
-    timeRemaining = 300; 
-    updateTimeDisplay();
-    currentPairsTotal = 9;
-    updatePairsLegend();
-};
-</script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "WebApplication",
+      "name": "Emydn Match - Transportasi Edition",
+      "description": "Game memory edukatif dengan 10 level progresif. Cocokkan kartu kendaraan dan asah daya ingat",
+      "url": "https://www.emydngroup.my.id/emydn-games/emydn-match.html",
+      "applicationCategory": "GameApplication",
+      "genre": "educational"
+    }
+    </script>
 </body>
 </html>

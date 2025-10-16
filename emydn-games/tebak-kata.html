@@ -3,9 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tebak Kata - Emydn EduGames</title>
+    <meta name="description" content="Tebak Kata - Game Edukatif untuk melatih penalaran dan kosakata. Tebak kata dari petunjuk yang diberikan dengan berbagai tingkat kesulitan. Asah kemampuan berpikirmu!">
+    <meta name="keywords" content="Tebak Kata, Word Guessing Game, Riddle Game, Vocabulary Game, Game Edukatif, Brain Game">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="shortcut icon" href="favicon.ico">
+    
+    <!-- Canonical -->
+    <link rel="canonical" href="https://emydngroup.com/emydn-games/tebak-kata.html">
+    
     <style>
-        /* [STYLES LAMA ANDA DI SINI] */
         * {
             margin: 0;
             padding: 0;
@@ -186,8 +195,9 @@
                 font-size: 1.1em;
             }
         }
-        /* [AKHIR DARI STYLES LAMA ANDA] */
     </style>
+    
+    <title>Tebak Kata - Game Edukatif | EMYDN Games</title>
 </head>
 <body>
     <div class="container">
@@ -213,7 +223,7 @@
                 Memuat soal...
             </div>
 
-            <input type="text" class="answer-input" id="answerInput" placeholder="Ketik jawabanmu di sini...">
+            <input type="text" class="answer-input" id="answerInput" placeholder="Ketik jawabanmu di sini..." aria-label="Kolom input jawaban">
             <button class="submit-btn" id="submitBtn" onclick="checkAnswer()">Kirim Jawaban</button>
         </div>
     </div>
@@ -235,28 +245,23 @@
                 <h3>Skor Akhir</h3>
                 <p style="font-size: 2em; color: #8B0000; font-weight: bold;"><span id="finalScore">0</span></p>
                 <p style="color: #666;">Jawaban Benar: <span id="correctAnswers">0</span>/20</p>
-                <p id="firebaseStatus" style="font-size: 0.9em; color: #008000; margin-top: 10px;">Skor terkirim ke leaderboard global!</p>
+                <p id="firebaseStatus" style="font-size: 0.9em; color: #008000; margin-top: 10px;">✅ Skor terkirim ke leaderboard!</p>
             </div>
             <button class="modal-btn" onclick="playAgain()">Main Lagi</button>
-            <a href="leaderboard.html" class="modal-btn">Lihat Leaderboard</a>
             <button class="modal-btn" onclick="goToMenu()">Pilih Game Lain</button>
         </div>
     </div>
 
     <script type="module">
-        // 1. IMPORT FUNGSI FIREBASE
         import { db, ref, push } from './firebaseConfig.js';
         
-        // 2. KONSTANTA FIREBASE DAN USER
         const GAME_NAME = 'tebak-kata';
         let currentUser = JSON.parse(localStorage.getItem('currentUser'));
         
-        // Cek login
         if (!currentUser) {
             window.location.href = 'index.html';
         }
 
-        // 3. VARIABEL GAME LAMA
         let allSoal = JSON.parse(localStorage.getItem('soalTebakKata'));
         let selectedSoal = shuffleArray([...allSoal]).slice(0, 20);
         let currentQuestion = 0;
@@ -265,7 +270,6 @@
         let timer;
         let timeLeft;
 
-        // 4. FUNGSI UTAMA GAME LAMA (dipertahankan)
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -283,7 +287,7 @@
             }
         }
 
-        window.loadQuestion = function() { // Dibuat global agar bisa diakses
+        window.loadQuestion = function() {
             if (currentQuestion >= selectedSoal.length) {
                 endGame();
                 return;
@@ -318,15 +322,14 @@
             }, 1000);
         }
 
-        window.checkAnswer = function() { // Dibuat global karena dipanggil dari onclick
+        window.checkAnswer = function() {
             clearInterval(timer);
             const userAnswer = document.getElementById('answerInput').value.trim().toLowerCase();
             const correctAnswer = selectedSoal[currentQuestion].answer.toLowerCase();
             
             const isCorrect = userAnswer === correctAnswer;
             if (isCorrect) {
-                // Tambahkan poin jika benar
-                score += (10 + timeLeft); // Bonus waktu
+                score += (10 + timeLeft);
                 correctCount++;
                 document.getElementById('score').textContent = score;
             }
@@ -353,15 +356,14 @@
             modal.style.display = 'flex';
         }
 
-        window.nextQuestion = function() { // Dibuat global karena dipanggil dari onclick
+        window.nextQuestion = function() {
             document.getElementById('resultModal').style.display = 'none';
             currentQuestion++;
             loadQuestion();
         }
         
-        // 5. FUNGSI BARU: KIRIM SKOR KE FIREBASE
         function sendScoreToFirebase(nama, kota, skor) {
-            const pathSkor = `leaderboard/${GAME_NAME}`; // Path: leaderboard/tebak-kata
+            const pathSkor = `leaderboard/${GAME_NAME}`;
             
             const dataSkor = {
                 nama: nama,
@@ -372,28 +374,24 @@
             
             const statusElement = document.getElementById('firebaseStatus');
             statusElement.textContent = "Mengirim skor...";
-            statusElement.style.color = "#FF8C00"; // Orange
+            statusElement.style.color = "#FF8C00";
 
-            // push() akan mengirim data dan membuat key unik otomatis
             push(ref(db, pathSkor), dataSkor)
                 .then(() => {
                     console.log("Skor berhasil dikirim ke Firebase!");
-                    statusElement.textContent = "Skor terkirim ke leaderboard global!";
-                    statusElement.style.color = "#008000"; // Green
+                    statusElement.textContent = "✅ Skor terkirim ke leaderboard global!";
+                    statusElement.style.color = "#008000";
                 })
                 .catch((error) => {
                     console.error("Gagal mengirim skor ke Firebase:", error);
                     statusElement.textContent = "Gagal mengirim skor. Cek koneksi.";
-                    statusElement.style.color = "#DC143C"; // Red
+                    statusElement.style.color = "#DC143C";
                 });
         }
 
-
-        // 6. UPDATE FUNGSI endGame()
-        window.endGame = function() { // Dibuat global karena dipanggil dari loadQuestion
+        window.endGame = function() {
             clearInterval(timer);
             
-            // Kirim skor ke Firebase
             if (score > 0 && currentUser) {
                 sendScoreToFirebase(currentUser.nama, currentUser.kota, score);
             }
@@ -403,8 +401,6 @@
             document.getElementById('finalModal').style.display = 'flex';
         }
 
-
-        // 7. FUNGSI NAVIGATION LAMA (dibuat global)
         window.playAgain = function() {
             location.reload();
         }
@@ -413,16 +409,25 @@
             window.location.href = 'menu.html';
         }
 
-
-        // 8. EVENT LISTENER LAMA (dipertahankan)
         document.getElementById('answerInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 checkAnswer();
             }
         });
 
-        // 9. START GAME
         loadQuestion();
     </script>
-    </body>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "WebApplication",
+      "name": "Tebak Kata - Word Guessing Game",
+      "description": "Game edukatif untuk melatih penalaran dan kosakata dengan petunjuk berbagai tingkat kesulitan",
+      "url": "https://emydngroup.com/emydn-games/tebak-kata.html",
+      "applicationCategory": "GameApplication",
+      "genre": "educational"
+    }
+    </script>
+</body>
 </html>

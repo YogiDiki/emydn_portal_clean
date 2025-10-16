@@ -3,7 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaderboard - Emydn EduGames</title>
+    <meta name="description" content="Leaderboard EMYDN Games - Lihat pemain terbaik bulan ini. Peringkat global dengan filter berdasarkan permainan dan kota. Kompetisi sehat dan motivasi belajar!">
+    <meta name="keywords" content="Leaderboard, Papan Peringkat, Ranking Games, Top Players, EMYDN Games">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="shortcut icon" href="favicon.ico">
+    
+    <!-- Canonical -->
+    <link rel="canonical" href="https://emydngroup.com/emydn-games/leaderboard.html">
+    
     <style>
         * {
             margin: 0;
@@ -131,7 +141,6 @@
             color: #666;
             font-weight: bold;
         }
-        /* Style Lama */
         .game-badge.tebak-kata {
             background: #FFE5E5;
             color: #8B0000;
@@ -144,22 +153,18 @@
             background: #E5FFE5;
             color: #006600;
         }
-        /* Style BARU: Permainan Warna (Color Game) */
         .game-badge.permainan-warna {
             background: #FFF5E5;
             color: #FFA500;
         }
-        /* Style BARU: Ikuti Pola (Simon Game) */
         .game-badge.ikuti-pola {
             background: #F0E5FF;
             color: #800080;
         }
-        /* Style BARU: Emydn Match */
         .game-badge.emydn-match {
             background: #E5F5FF;
             color: #00008B;
         }
-        /* Style BARU: Tetris */
         .game-badge.tetris {
             background: #FFE5E5;
             color: #DC143C;
@@ -198,25 +203,27 @@
             }
         }
     </style>
+    
+    <title>Leaderboard - EMYDN Games | Papan Peringkat Pemain Terbaik</title>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>🏆 Papan Peringkat</h1>
-            <p>Pemain Terbaik Bulan Ini</p>
+            <p>Pemain Terbaik Bulan Ini - Kompetisi Sehat dan Motivasi Belajar</p>
             <a href="menu.html" class="back-btn">← Kembali ke Menu</a>
         </div>
 
         <div class="leaderboard-card">
             <div class="filter-buttons">
-                <button class="filter-btn active" data-game="all">🎮 Semua Game</button>
-                <button class="filter-btn" data-game="tetris">🧱 Tetris</button>
-                <button class="filter-btn" data-game="emydn-match">🃏 Emydn Match</button>
-                <button class="filter-btn" data-game="permainan-warna">🎨 Permainan Warna</button>
-                <button class="filter-btn" data-game="ikuti-pola">💡 Ikuti Pola</button>
-                <button class="filter-btn" data-game="tebak-kata">🧠 Tebak Kata</button>
-                <button class="filter-btn" data-game="susun-huruf">🧩 Susun Huruf</button>
-                <button class="filter-btn" data-game="tebak-lokasi">🌍 Tebak Lokasi</button>
+                <button class="filter-btn active" data-game="all" aria-label="Tampilkan semua game">🎮 Semua Game</button>
+                <button class="filter-btn" data-game="tetris" aria-label="Tampilkan leaderboard Tetris">🧱 Tetris</button>
+                <button class="filter-btn" data-game="emydn-match" aria-label="Tampilkan leaderboard Emydn Match">🃏 Emydn Match</button>
+                <button class="filter-btn" data-game="permainan-warna" aria-label="Tampilkan leaderboard Permainan Warna">🎨 Permainan Warna</button>
+                <button class="filter-btn" data-game="ikuti-pola" aria-label="Tampilkan leaderboard Ikuti Pola">💡 Ikuti Pola</button>
+                <button class="filter-btn" data-game="tebak-kata" aria-label="Tampilkan leaderboard Tebak Kata">🧠 Tebak Kata</button>
+                <button class="filter-btn" data-game="susun-huruf" aria-label="Tampilkan leaderboard Susun Huruf">🧩 Susun Huruf</button>
+                <button class="filter-btn" data-game="tebak-lokasi" aria-label="Tampilkan leaderboard Tebak Lokasi">🌍 Tebak Lokasi</button>
             </div>
 
             <div class="leaderboard-table" id="leaderboardTable">
@@ -250,7 +257,6 @@
                     gameSnapshot.forEach(skorSnapshot => {
                         const skorData = skorSnapshot.val();
                         
-                        // Tambahkan properti 'game' dan 'gameKey'
                         fetchedData.push({
                             ...skorData,
                             id: skorSnapshot.key,
@@ -260,7 +266,6 @@
                     });
                 });
                 
-                // Sortir semua data: skor tertinggi, jika skor sama, yang terbaru (timestamp tertinggi) di atas
                 allData = fetchedData.sort((a, b) => {
                     if (b.skor !== a.skor) {
                         return b.skor - a.skor;
@@ -268,7 +273,6 @@
                     return b.timestamp - a.timestamp; 
                 });
                 
-                // Tampilkan data dengan filter saat ini
                 filterAndDisplay(currentFilter);
 
             }, {
@@ -278,7 +282,6 @@
 
         // 4. FUNGSI UNTUK MEMBANTU FORMAT NAMA GAME
         function formatGameName(key) {
-            // Mengubah 'permainan-warna' atau 'emydn-match' menjadi 'Permainan Warna' atau 'Emydn Match'
             return key.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
         }
 
@@ -301,11 +304,11 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Rank</th>
-                            <th>Nama</th>
-                            <th>Kota/Provinsi</th>
-                            <th>Game</th>
-                            <th>Skor</th>
+                            <th scope="col">Rank</th>
+                            <th scope="col">Nama</th>
+                            <th scope="col">Kota/Provinsi</th>
+                            <th scope="col">Game</th>
+                            <th scope="col">Skor</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -351,7 +354,7 @@
                 <div class="empty-state">
                     <div class="empty-state-icon">${isFiltered ? '🔍' : '📊'}</div>
                     <h2>${isFiltered ? 'Tidak Ada Data' : 'Belum Ada Data'}</h2>
-                    <p>${isFiltered ? `Belum ada skor yang tercatat untuk **${gameName}**.` : 'Leaderboard masih kosong. Mainkan game untuk masuk ke peringkat!'}</p>
+                    <p>${isFiltered ? `Belum ada skor yang tercatat untuk <strong>${gameName}</strong>.` : 'Leaderboard masih kosong. Mainkan game untuk masuk ke peringkat!'}</p>
                 </div>
             `;
         }
@@ -359,13 +362,8 @@
         // 7. EVENT LISTENER UNTUK TOMBOL FILTER
         FILTER_BUTTONS.forEach(btn => {
             btn.addEventListener('click', (e) => {
-                // Hapus class 'active' dari semua tombol
                 FILTER_BUTTONS.forEach(b => b.classList.remove('active'));
-                
-                // Tambahkan class 'active' ke tombol yang diklik
                 e.target.classList.add('active');
-
-                // Panggil filter dan display
                 const gameType = e.target.getAttribute('data-game');
                 filterAndDisplay(gameType);
             });
@@ -373,6 +371,17 @@
 
         // 8. JALANKAN SAAT HALAMAN DIMUAT
         loadLeaderboardFromFirebase();
+    </script>
+    
+    <!-- Schema Markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "CollectionPage",
+      "name": "Leaderboard EMYDN Games",
+      "description": "Papan peringkat pemain terbaik EMYDN Games dengan ranking global dan filter berdasarkan permainan",
+      "url": "https://emydngroup.com/emydn-games/leaderboard.html"
+    }
     </script>
 </body>
 </html>

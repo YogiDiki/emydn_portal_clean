@@ -3,9 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu - Emydn EduGames</title>
+    <meta name="description" content="Menu Permainan EMYDN Games - Pilih dari 7 game edukatif interaktif: Tetris, Match, Permainan Warna, Ikuti Pola, Tebak Kata, Susun Huruf, Tebak Lokasi. Belajar sambil bermain!">
+    <meta name="keywords" content="Menu Games, Game Edukatif, Educational Games, Pilih Game, Game Interaktif">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="shortcut icon" href="favicon.ico">
+    
+    <!-- Canonical -->
+    <link rel="canonical" href="https://emydngroup.com/emydn-games/menu.html">
+    
     <style>
-        /* [CSS LAMA ANDA DI SINI, TIDAK ADA PERUBAHAN] */
         * {
             margin: 0;
             padding: 0;
@@ -136,6 +145,8 @@
             }
         }
     </style>
+    
+    <title>Menu Permainan - EMYDN Games | Pilih Game Edukatif</title>
 </head>
 <body>
     <div class="container">
@@ -144,54 +155,53 @@
                 <h2>🎮 Selamat Datang, <span id="userName"></span>!</h2>
                 <p>📍 <span id="userCity"></span></p>
             </div>
-            <button class="logout-btn" onclick="logout()">Keluar</button>
+            <button class="logout-btn" onclick="logout()" aria-label="Tombol Keluar">Keluar</button>
         </div>
 
         <div class="games-grid">
-            <div class="game-card" onclick="playGame('emydn-match.html')">
+            <div class="game-card" onclick="playGame('emydn-match.html')" role="button" tabindex="0" aria-label="Mainkan Emydn Match">
                 <div class="game-icon">🃏</div>
                 <h3>Emydn Match</h3>
                 <p>Uji daya ingatmu dengan mencocokkan pasangan kartu yang sama!</p>
                 <button class="play-btn">Main Sekarang</button>
             </div>
 
-            <div class="game-card" onclick="playGame('color-game.html')">
+            <div class="game-card" onclick="playGame('color-game.html')" role="button" tabindex="0" aria-label="Mainkan Permainan Warna">
                 <div class="game-icon">🎨</div>
                 <h3>Permainan Warna</h3>
                 <p>Uji kecepatan kognitifmu! Fokus pada warna tinta, bukan teksnya.</p>
                 <button class="play-btn">Main Sekarang</button>
             </div>
 
-            <div class="game-card" onclick="playGame('simon-says.html')">
+            <div class="game-card" onclick="playGame('simon-says.html')" role="button" tabindex="0" aria-label="Mainkan Ikuti Pola">
                 <div class="game-icon">💡</div>
                 <h3>Ikuti Pola</h3>
                 <p>Uji daya ingatmu! Hafalkan dan ulangi urutan cahaya yang menyala.</p>
                 <button class="play-btn">Main Sekarang</button>
             </div>
             
-            <div class="game-card" onclick="playGame('tebak-kata.html')">
+            <div class="game-card" onclick="playGame('tebak-kata.html')" role="button" tabindex="0" aria-label="Mainkan Tebak Kata">
                 <div class="game-icon">🧠</div>
                 <h3>Tebak Kata</h3>
                 <p>Tebak kata dari petunjuk yang diberikan. Asah kemampuan berpikirmu!</p>
                 <button class="play-btn">Main Sekarang</button>
             </div>
 
-            <div class="game-card" onclick="playGame('susun-huruf.html')">
+            <div class="game-card" onclick="playGame('susun-huruf.html')" role="button" tabindex="0" aria-label="Mainkan Susun Huruf">
                 <div class="game-icon">🧩</div>
                 <h3>Susun Huruf</h3>
                 <p>Susun huruf yang acak menjadi kata yang benar. Uji konsentrasimu!</p>
                 <button class="play-btn">Main Sekarang</button>
             </div>
 
-            <div class="game-card" onclick="playGame('tebak-lokasi.html')">
+            <div class="game-card" onclick="playGame('tebak-lokasi.html')" role="button" tabindex="0" aria-label="Mainkan Tebak Lokasi">
                 <div class="game-icon">🌍</div>
                 <h3>Tebak Lokasi</h3>
                 <p>Tebak lokasi di Indonesia dari petunjuk. Kenali Nusantara!</p>
                 <button class="play-btn">Main Sekarang</button>
             </div>
 
-            <!-- ✅ GAME BARU: TETRIS -->
-            <div class="game-card" onclick="playGame('tetris.html')">
+            <div class="game-card" onclick="playGame('tetris.html')" role="button" tabindex="0" aria-label="Mainkan Tetris">
                 <div class="game-icon">🎲</div>
                 <h3>Tetris</h3>
                 <p>Susun balok jatuh agar membentuk garis penuh. Latih fokus dan refleksmu!</p>
@@ -230,6 +240,26 @@
                 window.location.href = 'index.html';
             }
         }
+
+        // Keyboard accessibility
+        document.querySelectorAll('.game-card').forEach(card => {
+            card.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    card.click();
+                }
+            });
+        });
+    </script>
+    
+    <!-- Schema Markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "CollectionPage",
+      "name": "Menu Permainan EMYDN Games",
+      "description": "Halaman menu dengan 7 permainan edukatif interaktif untuk belajar sambil bermain",
+      "url": "https://emydngroup.com/emydn-games/menu.html"
+    }
     </script>
 </body>
 </html>

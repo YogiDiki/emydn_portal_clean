@@ -3,7 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tebak Lokasi - Emydn EduGames</title>
+    <meta name="description" content="Tebak Lokasi Indonesia - Game Edukatif Geografi. Tebak kota dan provinsi di Indonesia dari petunjuk. Asah pengetahuan geografi Indonesia dengan cara yang menyenangkan!">
+    <meta name="keywords" content="Tebak Lokasi, Geography Game, Kota Indonesia, Provinsi, Geografi Indonesia, Game Edukatif">
+    <meta name="robots" content="index, follow">
+    
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="canonical" href="https://www.emydngroup.my.id/emydn-games/tebak-lokasi.html">
+    
     <style>
         * {
             margin: 0;
@@ -164,11 +171,6 @@
         .modal-icon {
             font-size: 5em;
             margin-bottom: 20px;
-            animation: iconBounce 0.5s ease-out;
-        }
-        @keyframes iconBounce {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
         }
         .modal-title {
             font-size: 2em;
@@ -215,6 +217,8 @@
             }
         }
     </style>
+    
+    <title>Tebak Lokasi Indonesia - Game Geografi | EMYDN Games</title>
 </head>
 <body>
     <div class="container">
@@ -277,40 +281,6 @@
         let currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if (!currentUser) {
             window.location.href = 'index.html';
-        }
-
-        // AUDIO SYSTEM
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        const audioCtx = new AudioContext();
-
-        function playSound(frequency, duration, type = 'sine') {
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            
-            oscillator.frequency.value = frequency;
-            oscillator.type = type;
-            
-            gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-            
-            oscillator.start(audioCtx.currentTime);
-            oscillator.stop(audioCtx.currentTime + duration);
-        }
-
-        function playCorrectSound() {
-            playSound(800, 0.15, 'sine');
-            setTimeout(() => playSound(1000, 0.15, 'sine'), 100);
-        }
-
-        function playWrongSound() {
-            playSound(300, 0.3, 'sawtooth');
-        }
-
-        function playNextSound() {
-            playSound(600, 0.1, 'square');
         }
 
         let allSoal = JSON.parse(localStorage.getItem('soalTebakLokasi'));
@@ -380,7 +350,6 @@
             btn.classList.add('selected');
             selectedAnswer = answer;
             document.getElementById('submitBtn').disabled = false;
-            playSound(400, 0.05, 'square');
         }
 
         function startTimer() {
@@ -426,12 +395,10 @@
             const text = document.getElementById('modalText');
 
             if (isCorrect) {
-                playCorrectSound();
                 icon.textContent = '✅';
                 title.textContent = 'Benar!';
                 text.textContent = 'Hebat! Kamu tahu lokasinya!';
             } else {
-                playWrongSound();
                 icon.textContent = '❌';
                 title.textContent = 'Salah!';
                 text.textContent = `Jawaban yang benar: ${correctAnswer}`;
@@ -441,7 +408,6 @@
         }
 
         function nextQuestion() {
-            playNextSound();
             document.getElementById('resultModal').style.display = 'none';
             currentQuestion++;
             loadQuestion();
@@ -470,13 +436,24 @@
             document.getElementById('finalModal').style.display = 'flex';
         }
 
-        // EVENT LISTENERS
         document.getElementById('submitBtn').addEventListener('click', checkAnswer);
         document.getElementById('nextBtn').addEventListener('click', nextQuestion);
         document.getElementById('playAgainBtn').addEventListener('click', () => location.reload());
         document.getElementById('menuBtn').addEventListener('click', () => window.location.href = 'menu.html');
 
         loadQuestion();
+    </script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "WebApplication",
+      "name": "Tebak Lokasi Indonesia - Geography Game",
+      "description": "Game edukatif geografi untuk mengenal kota dan provinsi di Indonesia",
+      "url": "https://www.emydngroup.my.id/emydn-games/tebak-lokasi.html",
+      "applicationCategory": "GameApplication",
+      "genre": "educational"
+    }
     </script>
 </body>
 </html>

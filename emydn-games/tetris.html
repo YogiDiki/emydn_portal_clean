@@ -3,7 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tetris - Emydn EduGames</title>
+  <meta name="description" content="Emydn Tetris - Game Puzzle Klasik yang Adiktif. Susun balok jatuh menjadi garis penuh untuk mendapatkan poin. Latih fokus, refleks, dan strategi spasial dengan cara yang menyenangkan!">
+  <meta name="keywords" content="Tetris, Puzzle Game, Block Game, Game Edukatif, Reflex Game, Strategy Game">
+  <meta name="robots" content="index, follow">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="shortcut icon" href="favicon.ico">
+  
+  <!-- Canonical -->
+  <link rel="canonical" href="https://www.emydngroup.my.id/emydn-games/tetris.html">
+  
   <style>
     * {
       margin: 0;
@@ -76,41 +86,6 @@
       margin: 0 auto 20px;
       display: flex;
       justify-content: center;
-    }
-    .line-clear-effect {
-      position: absolute;
-      width: 100%;
-      height: 30px;
-      background: rgba(255, 215, 0, 0.8);
-      pointer-events: none;
-      animation: lineClear 0.5s;
-      border-radius: 5px;
-      box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
-    }
-    @keyframes lineClear {
-      0% { opacity: 1; transform: scaleX(1); }
-      100% { opacity: 0; transform: scaleX(0); }
-    }
-    .speed-notification {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: linear-gradient(135deg, #FFD700, #FFA500);
-      color: #8B0000;
-      padding: 30px 50px;
-      border-radius: 15px;
-      font-size: 1.8em;
-      font-weight: bold;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-      z-index: 1000;
-      animation: speedUp 1s ease-out;
-      pointer-events: none;
-    }
-    @keyframes speedUp {
-      0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-      50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
-      100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
     }
     .controls {
       background: #f9f9f9;
@@ -199,12 +174,6 @@
     .game-over-icon {
       font-size: 5em;
       margin-bottom: 20px;
-      animation: rotateIcon 1s ease-in-out;
-    }
-    @keyframes rotateIcon {
-      0%, 100% { transform: rotate(0deg); }
-      25% { transform: rotate(-10deg); }
-      75% { transform: rotate(10deg); }
     }
     .game-over-title {
       font-size: 2.5em;
@@ -267,6 +236,8 @@
       }
     }
   </style>
+  
+  <title>Tetris - Game Puzzle Klasik | EMYDN Games</title>
 </head>
 <body>
   <div class="game-container">
@@ -330,19 +301,16 @@
   </div>
 
   <script type="module">
-    // ====== 1. IMPORT FIREBASE CONFIG ======
     import { db, ref, push } from './firebaseConfig.js';
 
     const GAME_PATH = 'tetris';
 
-    // ====== 2. CEK LOGIN USER ======
     let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (!currentUser) {
       alert('Silakan login terlebih dahulu!');
       window.location.href = 'index.html';
     }
 
-    // ====== 3. SETUP CANVAS & RESPONSIF ======
     const canvas = document.getElementById('tetris');
     const ctx = canvas.getContext('2d');
     
@@ -368,7 +336,6 @@
       draw();
     });
 
-    // ====== 4. AUDIO CONTEXT ======
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     const audioCtx = new AudioContext();
 
@@ -396,18 +363,10 @@
       });
     }
 
-    // ====== 5. LOGIKA GAME ======
     const board = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
 
     const colors = [
-      '#f5f5f5',  // 0 - Background
-      '#FF0000',  // 1 - Merah terang
-      '#00FF00',  // 2 - Hijau terang
-      '#0000FF',  // 3 - Biru terang
-      '#FFFF00',  // 4 - Kuning terang
-      '#FF00FF',  // 5 - Magenta
-      '#00FFFF',  // 6 - Cyan
-      '#FFA500'   // 7 - Orange
+      '#f5f5f5', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF', '#FFA500'
     ];
 
     const pieces = [
@@ -421,8 +380,8 @@
     ];
 
     let piece, pos = {x: 3, y: 0}, score = 0, speedMultiplier = 1.0, baseDropInterval = 800, dropInterval = 800, lastDrop = 0;
-    let gameRunning = true; // FLAG UNTUK MENCEGAH DUPLICATE
-    let scoreSubmitted = false; // FLAG UNTUK MENCEGAH PENGIRIMAN GANDA
+    let gameRunning = true;
+    let scoreSubmitted = false;
 
     function randomPiece() {
       const p = pieces[Math.floor(Math.random() * pieces.length)];
@@ -482,30 +441,11 @@
       return p[0].map((_, i) => p.map(row => row[i])).reverse();
     }
 
-    function showLineEffect(rowIndex) {
-      const effect = document.createElement('div');
-      effect.className = 'line-clear-effect';
-      effect.style.top = (rowIndex * BLOCK) + 'px';
-      effect.style.left = '0';
-      canvas.parentElement.appendChild(effect);
-      setTimeout(() => effect.remove(), 500);
-    }
-
-    function showSpeedNotification() {
-      const notification = document.createElement('div');
-      notification.className = 'speed-notification';
-      notification.textContent = `⚡ Kecepatan Naik! ${speedMultiplier.toFixed(1)}x`;
-      document.body.appendChild(notification);
-      setTimeout(() => notification.remove(), 1000);
-    }
-
     function clearLines() {
       let cleared = 0;
-      const clearedRows = [];
       
       for (let y = ROWS - 1; y >= 0; y--) {
         if (board[y].every(v => v)) {
-          clearedRows.push(y);
           board.splice(y, 1);
           board.unshift(Array(COLS).fill(0));
           cleared++;
@@ -514,7 +454,6 @@
       }
       
       if (cleared) {
-        clearedRows.forEach(row => showLineEffect(row));
         playClearSound(cleared);
         
         score += cleared * 100;
@@ -529,14 +468,13 @@
           document.getElementById('speed').textContent = speedMultiplier.toFixed(1) + 'x';
           document.getElementById('speedBox').classList.add('pulse');
           setTimeout(() => document.getElementById('speedBox').classList.remove('pulse'), 500);
-          showSpeedNotification();
           playSound(880, 0.3, 'sine');
         }
       }
     }
 
     function drop() {
-      if (!gameRunning) return; // STOP JIKA GAME SUDAH BERAKHIR
+      if (!gameRunning) return;
       
       if (validMove(0, 1)) pos.y++;
       else {
@@ -559,7 +497,7 @@
     }
 
     function update(time = 0) {
-      if (!gameRunning) return; // STOP ANIMATION LOOP
+      if (!gameRunning) return;
       
       if (time - lastDrop > dropInterval) {
         drop();
@@ -569,7 +507,6 @@
       requestAnimationFrame(update);
     }
 
-    // ===== KONTROL KEYBOARD =====
     document.addEventListener('keydown', e => {
       if (!gameRunning) return;
       
@@ -596,7 +533,6 @@
       draw();
     });
 
-    // ===== KONTROL TOUCH =====
     let startX = 0, startY = 0;
     canvas.addEventListener('touchstart', e => {
       if (!gameRunning) return;
@@ -638,9 +574,8 @@
 
     update();
 
-    // ===== KIRIM SKOR KE FIREBASE (HANYA SEKALI) =====
     function sendScoreToFirebase(finalScore) {
-      if (scoreSubmitted) return; // JANGAN KIRIM LAGI JIKA SUDAH DIKIRIM
+      if (scoreSubmitted) return;
       scoreSubmitted = true;
 
       const scoreData = {
@@ -657,9 +592,9 @@
     }
 
     function gameOver() {
-      if (!gameRunning) return; // JANGAN PANGGIL LAGI JIKA SUDAH GAME OVER
+      if (!gameRunning) return;
       
-      gameRunning = false; // SET FLAG BAHWA GAME SUDAH BERAKHIR
+      gameRunning = false;
       
       sendScoreToFirebase(score);
       
@@ -667,6 +602,18 @@
       document.getElementById('finalSpeed').textContent = speedMultiplier.toFixed(1) + 'x';
       document.getElementById('gameOverModal').style.display = 'flex';
     }
+  </script>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org/",
+    "@type": "WebApplication",
+    "name": "Emydn Tetris - Classic Puzzle Game",
+    "description": "Game Tetris klasik yang adiktif dengan sistem scoring dan peningkatan kecepatan progresif",
+    "url": "https://www.emydngroup.my.id/emydn-games/tetris.html",
+    "applicationCategory": "GameApplication",
+    "genre": "puzzle"
+  }
   </script>
 </body>
 </html>

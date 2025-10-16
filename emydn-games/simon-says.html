@@ -3,11 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ikuti Pola - Emydn EduGames</title>
+    <meta name="description" content="Ikuti Pola (Simon Says) - Game Memory Sequence edukatif. Hafalkan dan ulangi urutan cahaya yang menyala. Asah memori dan konsentrasimu dengan tantangan progresif!">
+    <meta name="keywords" content="Simon Says, Memory Game, Sequence Game, Game Memori, Game Kognitif, Educational Game, Ikuti Pola">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="shortcut icon" href="favicon.ico">
+    
+    <!-- Canonical -->
+    <link rel="canonical" href="https://www.emydngroup.my.id/emydn-games/simon-says.html">
+    
     <style>
-        /* ================================================= */
-        /* STYLES DARI SUSUN-HURUF.HTML        */
-        /* ================================================= */
         * {
             margin: 0;
             padding: 0;
@@ -48,6 +55,9 @@
             cursor: pointer;
             text-decoration: none;
             display: inline-block;
+        }
+        .back-btn:hover {
+            background: #DC143C;
         }
         .game-area {
             background: white;
@@ -110,6 +120,9 @@
             cursor: pointer;
             margin: 5px;
         }
+        .modal-btn:hover {
+            background: #DC143C;
+        }
         .final-score {
             background: #f8f8f8;
             padding: 20px;
@@ -120,11 +133,7 @@
             color: #8B0000;
             margin-bottom: 10px;
         }
-        /* ================================================= */
-        /* END OF STYLES DARI SUSUN-HURUF.HTML          */
-        /* ================================================= */
 
-        /* STYLE KHUSUS GAME INI */
         #simonBoard {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -143,7 +152,7 @@
             transition: opacity 0.1s, transform 0.1s;
         }
         .simon-btn.active {
-            opacity: 1; /* Menyala */
+            opacity: 1;
             box-shadow: 0 0 40px rgba(255, 255, 255, 0.8);
             transform: scale(1.02);
         }
@@ -151,13 +160,26 @@
             transform: scale(0.98);
         }
         .simon-btn.disabled {
-            pointer-events: none; /* Nonaktifkan klik saat pola dimainkan */
+            pointer-events: none;
         }
         #btnRed { background-color: #D90000; border-radius: 10px 0 0 0; }
         #btnGreen { background-color: #00A300; border-radius: 0 10px 0 0; }
         #btnYellow { background-color: #E6E600; border-radius: 0 0 0 10px; }
         #btnBlue { background-color: #0000D9; border-radius: 0 0 10px 0; }
+        
+        @media (max-width: 768px) {
+            #simonBoard {
+                width: 100%;
+                height: 300px;
+                gap: 10px;
+            }
+            .game-area {
+                padding: 20px;
+            }
+        }
     </style>
+    
+    <title>Ikuti Pola - Game Memory Sequence | EMYDN Games</title>
 </head>
 <body>
     <div class="container">
@@ -171,27 +193,27 @@
         <div class="game-area">
             <h1 class="game-title">💡 Ikuti Pola</h1>
             
-            <p class="hint">Perhatikan urutan cahaya, lalu ulangi!</p>
+            <p class="hint">Perhatikan urutan cahaya, lalu ulangi dengan benar!</p>
 
             <div id="simonBoard">
-                <button id="btnRed" class="simon-btn disabled" data-color="Red"></button>
-                <button id="btnGreen" class="simon-btn disabled" data-color="Green"></button>
-                <button id="btnYellow" class="simon-btn disabled" data-color="Yellow"></button>
-                <button id="btnBlue" class="simon-btn disabled" data-color="Blue"></button>
+                <button id="btnRed" class="simon-btn disabled" data-color="Red" aria-label="Tombol Merah"></button>
+                <button id="btnGreen" class="simon-btn disabled" data-color="Green" aria-label="Tombol Hijau"></button>
+                <button id="btnYellow" class="simon-btn disabled" data-color="Yellow" aria-label="Tombol Kuning"></button>
+                <button id="btnBlue" class="simon-btn disabled" data-color="Blue" aria-label="Tombol Biru"></button>
             </div>
 
             <p style="font-size: 1.5em; margin-top: 20px;">
                 <span id="instructionText">Tekan Mulai untuk bermain</span>
             </p>
-            <button class="modal-btn" id="startButton">Mulai Game</button> 
+            <button class="modal-btn" id="startButton" style="margin-top: 20px;">Mulai Game</button> 
         </div>
     </div>
 
-    <div class="result-modal" id="resultModal" style="z-index: 1001;">
+    <div class="result-modal" id="resultModal">
         <div class="modal-content">
-            <div class="modal-icon" id="modalIcon">✅</div>
-            <h2 class="modal-title" id="modalTitle">Lanjut!</h2>
-            <p class="modal-text" id="modalText">Level <span id="currentLevel">1</span> Selesai!</p>
+            <div class="modal-icon">✅</div>
+            <h2 class="modal-title">Lanjut!</h2>
+            <p class="modal-text">Level <span id="currentLevel">1</span> Selesai!</p>
             <button class="modal-btn" id="nextLevelBtn">Level Berikutnya</button>
         </div>
     </div>
@@ -249,18 +271,15 @@
             gameLevel++;
             instructionText.textContent = `Level ${gameLevel}: Perhatikan Pola!`;
 
-            // Tambahkan warna baru ke pola
             const newColorIndex = Math.floor(Math.random() * SIMON_COLORS.length);
             pattern.push(SIMON_COLORS[newColorIndex]);
 
-            // Tampilkan pola
             setTimeout(() => {
                 playPattern(pattern);
             }, 1000); 
         }
 
         function playPattern(currentPattern) {
-            // Nonaktifkan tombol saat pola dimainkan
             simonButtons.forEach(btn => btn.classList.add('disabled'));
             
             let i = 0;
@@ -271,20 +290,17 @@
                     clearInterval(interval);
                     canClick = true; 
                     instructionText.textContent = `Giliranmu! Ulangi ${gameLevel} langkah!`;
-                    // Aktifkan tombol
                     simonButtons.forEach(btn => btn.classList.remove('disabled'));
                 }
-            }, 800); // Waktu antara kilatan
+            }, 800);
         }
 
         function flashColor(color) {
             const btn = document.getElementById('btn' + color);
-            // Tambahkan class 'active'
             btn.classList.add('active');
             setTimeout(() => {
-                // Hapus class 'active'
                 btn.classList.remove('active');
-            }, 400); // Durasi kilatan
+            }, 400);
         }
 
         function handlePlayerClick(color) {
@@ -295,30 +311,25 @@
 
             const currentIndex = playerSequence.length - 1;
 
-            // 1. Cek apakah klik saat ini salah
             if (playerSequence[currentIndex] !== pattern[currentIndex]) {
                 canClick = false;
                 simonButtons.forEach(btn => btn.classList.add('disabled'));
-                endGame(false); // Game Over!
+                endGame();
                 return;
             }
 
-            // 2. Cek apakah pemain sudah menyelesaikan pola
             if (playerSequence.length === pattern.length) {
                 canClick = false;
                 simonButtons.forEach(btn => btn.classList.add('disabled'));
                 
-                // Beri skor (misalnya 100 poin per level)
                 score += gameLevel * 100; 
                 scoreDisplay.textContent = score;
 
-                // Tampilkan modal Lanjut Level
                 document.getElementById('currentLevel').textContent = gameLevel;
                 document.getElementById('resultModal').style.display = 'flex';
             }
         }
 
-        // Event listener untuk tombol-tombol simon (sudah benar)
         document.getElementById('simonBoard').addEventListener('click', (e) => {
             if (e.target.classList.contains('simon-btn')) {
                 const colorName = e.target.dataset.color;
@@ -326,26 +337,24 @@
             }
         });
 
-        // FUNGSI FIREBASE & AKHIR GAME
         function sendScoreToFirebase(finalScore, finalLevel) {
             const scoreData = {
                 nama: currentUser.nama,
                 kota: currentUser.kota, 
                 skor: finalScore, 
-                level: finalLevel, // Simpan level tertinggi
+                level: finalLevel,
                 timestamp: Date.now()
             };
             const leaderboardRef = ref(db, `leaderboard/${GAME_PATH}`);
             push(leaderboardRef, scoreData)
-                .then(() => console.log('Skor Simon Says berhasil dikirim ke Firebase!'))
+                .then(() => console.log('Skor Ikuti Pola berhasil dikirim ke Firebase!'))
                 .catch((error) => console.error('Gagal mengirim skor:', error));
         }
 
         function endGame() {
-            // Skor yang dikirim adalah skor yang didapat dari level terakhir yang berhasil dilewati
             sendScoreToFirebase(score, gameLevel - 1); 
             
-            document.getElementById('finalLevel').textContent = gameLevel - 1; // Level yang berhasil diselesaikan
+            document.getElementById('finalLevel').textContent = gameLevel - 1;
             document.getElementById('finalScore').textContent = score;
             
             document.getElementById('finalModal').style.display = 'flex';
@@ -359,20 +368,24 @@
             window.location.href = 'menu.html';
         }
 
-        // ==========================================================
-        // PERBAIKAN UTAMA: MENGGUNAKAN EVENT LISTENER UNTUK MODAL & MULAI
-        // ==========================================================
         document.addEventListener('DOMContentLoaded', () => {
-            // Hubungkan tombol Mulai
             document.getElementById('startButton').addEventListener('click', startSimonGame);
-
-            // Hubungkan tombol Lanjut Level
             document.getElementById('nextLevelBtn').addEventListener('click', nextSimonLevel);
-
-            // Hubungkan tombol modal akhir
             document.getElementById('playAgainBtn').addEventListener('click', playAgain);
             document.getElementById('goToMenuBtn').addEventListener('click', goToMenu);
         });
+    </script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "WebApplication",
+      "name": "Ikuti Pola - Simon Says Game",
+      "description": "Game memory sequence edukatif dengan peningkatan level progresif",
+      "url": "https://https://www.emydngroup.my.id//emydn-games/simon-says.html",
+      "applicationCategory": "GameApplication",
+      "genre": "educational"
+    }
     </script>
 </body>
 </html>
