@@ -1,25 +1,12 @@
 # robots.txt untuk emydngroup.my.id
 
-# Sitemap Location (PENTING: Letakkan di paling atas)
+# Lokasi Sitemap (PENTING: Gunakan versi Kanonis/www)
 Sitemap: https://www.emydngroup.my.id/sitemap.xml
 
-# Aturan untuk semua bot
+# Aturan untuk semua bot (termasuk Googlebot)
 User-agent: *
 Allow: /
 
-# Blokir folder tertentu (jika ada)
+# Blokir folder tertentu
 Disallow: /admin/
 Disallow: /api/
-
-# Blokir bot agresif
-User-agent: AhrefsBot
-Disallow: /
-
-User-agent: SemrushBot
-Disallow: /
-
-User-agent: DotBot
-Disallow: /
-
-User-agent: MJ12bot
-Disallow: /
